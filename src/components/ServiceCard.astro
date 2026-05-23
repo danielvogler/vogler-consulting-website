@@ -1,0 +1,37 @@
+---
+interface Props {
+  id?: string;
+  number: string;
+  title: string;
+  bluf: string;
+  topics?: readonly string[] | string[];
+}
+
+const { id, number, title, bluf, topics = [] } = Astro.props;
+---
+<article id={id} class="grid grid-cols-12 gap-6 md:gap-10 py-16 border-t border-rule scroll-mt-24">
+  <header class="col-span-12 md:col-span-3">
+    <p class="text-sm tracking-wider uppercase text-accent">{number}</p>
+    <h2 class="mt-2 text-3xl md:text-4xl tracking-tighter font-medium whitespace-pre-line">
+      {title}
+    </h2>
+  </header>
+  <div class="col-span-12 md:col-span-9 space-y-6">
+    <p class="text-xl md:text-2xl tracking-tight leading-snug text-ink/90">
+      {bluf}
+    </p>
+    <div class="text-base text-muted leading-relaxed max-w-3xl">
+      <slot />
+    </div>
+    {topics.length > 0 && (
+      <ul class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm text-ink/80 pt-4 border-t border-rule/60 max-w-3xl">
+        {topics.map((topic) => (
+          <li class="flex items-baseline gap-2">
+            <span class="text-accent">·</span>
+            <span>{topic}</span>
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
+</article>

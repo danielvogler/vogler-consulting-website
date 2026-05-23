@@ -1,0 +1,91 @@
+---
+import type { Locale } from '~/i18n';
+
+interface ServiceProps {
+  name: string;
+  description: string;
+  serviceType: string;
+}
+
+interface Props {
+  lang: Locale;
+  type?: 'org' | 'service';
+  service?: ServiceProps;
+}
+
+const { lang, type = 'org', service } = Astro.props;
+
+const SITE = import.meta.env.SITE_URL ?? 'https://vogler-consulting.ch';
+const CONTACT_EMAIL = import.meta.env.CONTACT_EMAIL || 'daniel@vogler-consulting.ch';
+
+const organization = {
+  '@type': 'ProfessionalService',
+  '@id': `${SITE}/#organization`,
+  name: 'VOGLER CONSULTING',
+  legalName: 'VOGLER CONSULTING',
+  url: SITE,
+  logo: `${SITE}/og.png`,
+  description:
+    lang === 'de'
+      ? 'Schweizer Beratung für datengetriebene und agentische KI-Lösungen. Workshops zu Daten, Code, Cloud und Agentic AI sowie End-to-End-Delivery von Cloud-basierten Data-Science-Pipelines.'
+      : 'Swiss data-engineering and agentic AI consulting. Workshops on data, code, cloud, and agentic AI, plus end-to-end cloud-based data-science pipelines.',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Staeblistr. 1',
+    addressLocality: 'Zurich',
+    postalCode: '8006',
+    addressCountry: 'CH',
+  },
+  areaServed: [
+    { '@type': 'Country', name: 'Switzerland' },
+    { '@type': 'Country', name: 'Germany' },
+    { '@type': 'Country', name: 'Austria' },
+  ],
+  knowsAbout: [
+    'Data Engineering',
+    'Agentic AI',
+    'Cloud Consulting',
+    'Data Pipelines',
+    'Machine Learning Infrastructure',
+    'Google Cloud',
+    'Kubernetes',
+    'Python',
+  ],
+  taxID: 'CHE-191.414.241',
+  email: CONTACT_EMAIL,
+  founder: { '@id': `${SITE}/#daniel-vogler` },
+  sameAs: ['https://www.linkedin.com/company/voglerconsulting'],
+};
+
+const daniel = {
+  '@type': 'Person',
+  '@id': `${SITE}/#daniel-vogler`,
+  name: 'Daniel Vogler',
+  jobTitle: lang === 'de' ? 'Inhaber & Consultant' : 'Founder & Consultant',
+  worksFor: { '@id': `${SITE}/#organization` },
+  alumniOf: [
+    { '@type': 'CollegeOrUniversity', name: 'ETH Zürich' },
+    { '@type': 'CollegeOrUniversity', name: 'University of Stuttgart' },
+    { '@type': 'CollegeOrUniversity', name: 'Oregon State University' },
+  ],
+  sameAs: ['https://www.linkedin.com/in/vogler-daniel/'],
+};
+
+const serviceSchema = service
+  ? {
+      '@type': 'Service',
+      '@id': `${SITE}${Astro.url.pathname}#service`,
+      name: service.name,
+      description: service.description,
+      provider: { '@id': `${SITE}/#organization` },
+      areaServed: organization.areaServed,
+      serviceType: service.serviceType,
+    }
+  : null;
+
+const graph: Record<string, unknown>[] = [organization, daniel];
+if (type === 'service' && serviceSchema) graph.push(serviceSchema);
+
+const payload = { '@context': 'https://schema.org', '@graph': graph };
+---
+<script type="application/ld+json" set:html={JSON.stringify(payload)} is:inline />

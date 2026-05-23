@@ -1,0 +1,74 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import PageHeader from '~/components/PageHeader.astro';
+import Section from '~/components/Section.astro';
+import { t } from '~/i18n';
+
+const lang = 'en' as const;
+const strings = t(lang);
+const page = strings.pages.impressum;
+
+const CONTACT_EMAIL = import.meta.env.CONTACT_EMAIL || 'daniel@vogler-consulting.ch';
+---
+<BaseLayout title={page.title} description="Imprint" lang={lang}>
+  <PageHeader heading={page.heading} />
+
+  <Section>
+    <div class="grid grid-cols-12 gap-6 md:gap-10">
+      <div class="col-span-12 md:col-span-3">
+        <p class="text-sm tracking-wider uppercase text-muted">Provider</p>
+      </div>
+      <div class="col-span-12 md:col-span-9 space-y-4 text-base text-ink/85 leading-relaxed">
+        <p>
+          <strong class="text-ink">VOGLER CONSULTING</strong><br />
+          Einzelfirma (Swiss sole proprietorship)<br />
+          Owner: Daniel Vogler
+        </p>
+        <p>
+          Staeblistr. 1<br />
+          8006 Zurich<br />
+          Switzerland
+        </p>
+        <p>UID: CHE-191.414.241</p>
+        <p>
+          Email:&nbsp;
+          <a href={`mailto:${CONTACT_EMAIL}`} class="link-underline">{CONTACT_EMAIL}</a>
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <Section bordered>
+    <div class="grid grid-cols-12 gap-6 md:gap-10">
+      <div class="col-span-12 md:col-span-3">
+        <p class="text-sm tracking-wider uppercase text-muted">Liability for content</p>
+      </div>
+      <div class="col-span-12 md:col-span-9 space-y-4 text-base text-ink/85 leading-relaxed max-w-3xl">
+        <p>
+          The content on this website is created with the greatest care. However, no guarantee can be given for
+          the accuracy, completeness, or timeliness of the content.
+        </p>
+        <p>
+          Links to external websites are outside our area of responsibility. We disclaim any liability for such
+          sites.
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <Section bordered>
+    <div class="grid grid-cols-12 gap-6 md:gap-10">
+      <div class="col-span-12 md:col-span-3">
+        <p class="text-sm tracking-wider uppercase text-muted">Copyright</p>
+      </div>
+      <div class="col-span-12 md:col-span-9 text-base text-ink/85 leading-relaxed max-w-3xl">
+        <p>
+          Texts and graphics on this website are subject to Swiss copyright law. Reproduction or use outside the
+          legal exemptions requires written consent from VOGLER CONSULTING. Third-party logos are trademarks of
+          their respective owners and are used under the Simple Icons license (CC0), without implying any
+          partnership or endorsement.
+        </p>
+      </div>
+    </div>
+  </Section>
+</BaseLayout>

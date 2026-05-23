@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#fcfcfc"/>
+  <text x="80" y="320" font-family="system-ui, sans-serif" font-size="110" font-weight="500" fill="#1a1a1a" letter-spacing="-0.04em">VOGLER</text>
+  <text x="80" y="430" font-family="system-ui, sans-serif" font-size="110" font-weight="500" fill="#1a1a1a" letter-spacing="-0.04em">CONSULTING<tspan fill="#d63333">.</tspan></text>
+  <text x="80" y="520" font-family="system-ui, sans-serif" font-size="28" fill="#7d7d7d" letter-spacing="0.04em">AI · AGENTIC AI · ANALYTICS · DATA</text>
+</svg>

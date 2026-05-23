@@ -1,0 +1,64 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import PageHeader from '~/components/PageHeader.astro';
+import Section from '~/components/Section.astro';
+import ContactCTA from '~/components/ContactCTA.astro';
+import { t } from '~/i18n';
+
+const lang = 'de' as const;
+const strings = t(lang);
+const page = strings.pages.about;
+
+const CONTACT_EMAIL = import.meta.env.CONTACT_EMAIL || 'daniel@vogler-consulting.ch';
+---
+<BaseLayout title={page.title} description={page.lead} lang={lang}>
+  <PageHeader number="02 / Über uns" heading={page.heading} lead={page.lead} />
+
+  <Section>
+    <div class="grid grid-cols-12 gap-6 md:gap-10">
+      <div class="col-span-12 md:col-span-3">
+        <p class="text-sm tracking-wider uppercase text-accent">Ansatz</p>
+      </div>
+      <div class="col-span-12 md:col-span-9 space-y-6 text-lg text-ink/85 leading-relaxed max-w-3xl">
+        <p>
+          VOGLER CONSULTING ist ein Schweizer Unternehmen mit Fokus auf datengetriebene und agentische KI-Lösungen.
+          Wir kombinieren saubere Daten-Engineering-Praktiken mit modernen Cloud-Architekturen und liefern messbare
+          Resultate, keine Demos.
+        </p>
+        <p>
+          Wir arbeiten in drei Modi: als Delivery-Partner für massgeschneiderte Anwendungen, Pipelines und Produkte,
+          als Sparring-Partner für Strategie, Roadmap und interne Initiativen, oder als Workshop-Partner, der Teams
+          in die richtigen Praktiken einführt.
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <Section bordered>
+    <div class="grid grid-cols-12 gap-6 md:gap-10">
+      <div class="col-span-12 md:col-span-3">
+        <p class="text-sm tracking-wider uppercase text-accent">Werte</p>
+      </div>
+      <div class="col-span-12 md:col-span-9 grid sm:grid-cols-2 gap-x-10 gap-y-8 max-w-3xl">
+        <div>
+          <h3 class="text-xl tracking-tight font-medium">Resultatorientiert</h3>
+          <p class="mt-2 text-sm text-muted">Wirkung über Aufwand. Was zählt, ist das Ergebnis.</p>
+        </div>
+        <div>
+          <h3 class="text-xl tracking-tight font-medium">Pragmatisch</h3>
+          <p class="mt-2 text-sm text-muted">Die einfachste Lösung, die funktioniert.</p>
+        </div>
+        <div>
+          <h3 class="text-xl tracking-tight font-medium">Robust</h3>
+          <p class="mt-2 text-sm text-muted">Produktionsreif, von Tag eins an.</p>
+        </div>
+        <div>
+          <h3 class="text-xl tracking-tight font-medium">Transparent</h3>
+          <p class="mt-2 text-sm text-muted">Klare Roadmap, klare Kommunikation, klare Übergabe.</p>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <ContactCTA lang={lang} contactHref={`mailto:${CONTACT_EMAIL}`} />
+</BaseLayout>

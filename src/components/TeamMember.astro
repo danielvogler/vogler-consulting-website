@@ -1,0 +1,54 @@
+---
+import { Image } from 'astro:assets';
+
+interface Props {
+  name: string;
+  role: string;
+  photo?: ImageMetadata;
+  linkedin?: string;
+}
+
+const { name, role, photo, linkedin } = Astro.props;
+const Tag = linkedin ? 'a' : 'div';
+const linkProps = linkedin
+  ? { href: linkedin, target: '_blank', rel: 'noopener noreferrer' }
+  : {};
+
+const initials = name
+  .split(' ')
+  .map((p) => p[0])
+  .join('')
+  .slice(0, 2);
+---
+<article class="group">
+  <Tag
+    {...linkProps}
+    class:list={[
+      'block transition-transform',
+      linkedin && 'hover:-translate-y-0.5 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-accent',
+    ]}
+  >
+    <div class="relative aspect-square w-full max-w-[260px] mx-auto mb-6 rounded-full overflow-hidden bg-accent-soft ring-1 ring-rule group-hover:ring-accent transition-colors">
+      {photo ? (
+        <Image
+          src={photo}
+          alt={name}
+          width={520}
+          height={520}
+          class="w-full h-full object-cover"
+        />
+      ) : (
+        <span class="absolute inset-0 grid place-items-center text-accent text-5xl tracking-tighter font-medium">
+          {initials}
+        </span>
+      )}
+    </div>
+    <h3 class="text-xl tracking-tight font-medium text-center group-hover:text-accent transition-colors">
+      {name}
+    </h3>
+    <p class="text-sm text-muted mt-1 text-center">{role}</p>
+  </Tag>
+  <div class="mt-6 text-sm text-muted leading-relaxed [&_ul]:space-y-1.5 [&_li]:relative [&_li]:pl-4 [&_li]:before:content-['·'] [&_li]:before:absolute [&_li]:before:left-0 [&_li]:before:text-accent">
+    <slot />
+  </div>
+</article>

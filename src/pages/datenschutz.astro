@@ -1,0 +1,94 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import PageHeader from '~/components/PageHeader.astro';
+import Section from '~/components/Section.astro';
+import { t } from '~/i18n';
+
+const lang = 'de' as const;
+const strings = t(lang);
+const page = strings.pages.datenschutz;
+
+const CONTACT_EMAIL = import.meta.env.CONTACT_EMAIL || 'daniel@vogler-consulting.ch';
+---
+<BaseLayout title={page.title} description="Datenschutzerklärung" lang={lang}>
+  <PageHeader heading={page.heading} />
+
+  <Section>
+    <div class="grid grid-cols-12 gap-6 md:gap-10">
+      <div class="col-span-12 md:col-span-3">
+        <p class="text-sm tracking-wider uppercase text-muted">Verantwortliche Stelle</p>
+      </div>
+      <div class="col-span-12 md:col-span-9 space-y-4 text-base text-ink/85 leading-relaxed">
+        <p>
+          <strong class="text-ink">VOGLER CONSULTING</strong>, Staeblistr. 1, 8006 Zürich, Schweiz.<br />
+          Kontakt: <a href={`mailto:${CONTACT_EMAIL}`} class="link-underline">{CONTACT_EMAIL}</a>
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <Section bordered>
+    <div class="grid grid-cols-12 gap-6 md:gap-10">
+      <div class="col-span-12 md:col-span-3">
+        <p class="text-sm tracking-wider uppercase text-muted">Datenerhebung</p>
+      </div>
+      <div class="col-span-12 md:col-span-9 space-y-4 text-base text-ink/85 leading-relaxed max-w-3xl">
+        <p>
+          Diese Website erhebt keine personenbezogenen Daten über Formulare, Tracking oder Analyse-Werkzeuge.
+          Es werden keine Cookies gesetzt.
+        </p>
+        <p>
+          Beim Aufruf der Website werden vom Hosting-Anbieter automatisch Server-Logdaten verarbeitet (z. B.
+          IP-Adresse, Zeitpunkt, abgerufene Ressource). Diese Daten sind technisch notwendig für den Betrieb und
+          werden nicht für Analyse- oder Marketing-Zwecke ausgewertet.
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <Section bordered>
+    <div class="grid grid-cols-12 gap-6 md:gap-10">
+      <div class="col-span-12 md:col-span-3">
+        <p class="text-sm tracking-wider uppercase text-muted">Hosting</p>
+      </div>
+      <div class="col-span-12 md:col-span-9 text-base text-ink/85 leading-relaxed max-w-3xl">
+        <p>
+          Diese Website wird auf GitHub Pages (GitHub, Inc., USA) gehostet. GitHub erhebt im Rahmen des Betriebs
+          technische Logdaten; weitere Informationen sind in den Datenschutzbestimmungen von GitHub einsehbar.
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <Section bordered>
+    <div class="grid grid-cols-12 gap-6 md:gap-10">
+      <div class="col-span-12 md:col-span-3">
+        <p class="text-sm tracking-wider uppercase text-muted">Ihre Rechte</p>
+      </div>
+      <div class="col-span-12 md:col-span-9 space-y-4 text-base text-ink/85 leading-relaxed max-w-3xl">
+        <p>
+          Gemäss dem revidierten Schweizer Datenschutzgesetz (revDSG) sowie der EU-Datenschutz-Grundverordnung
+          (DSGVO), sofern anwendbar, haben Sie das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der
+          Bearbeitung sowie Datenübertragbarkeit bezüglich der Sie betreffenden Daten.
+        </p>
+        <p>
+          Anfragen richten Sie bitte an die oben genannte Kontaktadresse.
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <Section bordered>
+    <div class="grid grid-cols-12 gap-6 md:gap-10">
+      <div class="col-span-12 md:col-span-3">
+        <p class="text-sm tracking-wider uppercase text-muted">Änderungen</p>
+      </div>
+      <div class="col-span-12 md:col-span-9 text-base text-ink/85 leading-relaxed max-w-3xl">
+        <p>
+          Diese Datenschutzerklärung kann jederzeit angepasst werden. Es gilt die aktuelle, auf dieser Website
+          veröffentlichte Fassung.
+        </p>
+      </div>
+    </div>
+  </Section>
+</BaseLayout>

@@ -1,0 +1,57 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import PageHeader from '~/components/PageHeader.astro';
+import ServiceMap from '~/components/ServiceMap.astro';
+import ServiceCard from '~/components/ServiceCard.astro';
+import Section from '~/components/Section.astro';
+import ContactCTA from '~/components/ContactCTA.astro';
+import LogoConveyor from '~/components/LogoConveyor.astro';
+import { t } from '~/i18n';
+import { labelForTrack } from '~/data/service-groups';
+
+const lang = 'de' as const;
+const strings = t(lang);
+const page = strings.pages.services;
+
+const all = await getCollection('services', (e) => e.data.lang === lang);
+all.sort((a, b) => a.data.order - b.data.order);
+
+const services = await Promise.all(
+  all.map(async (entry, i) => {
+    const { Content } = await render(entry);
+    const group = labelForTrack(entry.data.track, lang);
+    return {
+      data: entry.data,
+      Content,
+      number: `${String(i + 1).padStart(2, '0')} / ${group}`,
+    };
+  }),
+);
+
+const CONTACT_EMAIL = import.meta.env.CONTACT_EMAIL || 'daniel@vogler-consulting.ch';
+---
+<BaseLayout title={page.title} description={page.lead} lang={lang}>
+  <PageHeader number="01 / Leistungen" heading={page.heading} lead={page.lead} />
+
+  <ServiceMap lang={lang} />
+
+  <Section>
+    {services.map(({ data, Content, number }) => (
+      <ServiceCard
+        id={`service-${data.track}`}
+        number={number}
+        title={data.title}
+        bluf={data.bluf}
+        topics={data.topics}
+      >
+        <Content />
+      </ServiceCard>
+    ))}
+    <div class="border-t border-rule" />
+  </Section>
+
+  <LogoConveyor label="Tech-Stack" />
+
+  <ContactCTA lang={lang} contactHref={`mailto:${CONTACT_EMAIL}`} />
+</BaseLayout>

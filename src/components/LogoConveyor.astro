@@ -1,0 +1,54 @@
+---
+import { Icon } from 'astro-icon/components';
+import { LOGOS } from '~/data/logos';
+
+interface Props {
+  label: string;
+}
+
+const { label } = Astro.props;
+const doubled = [...LOGOS, ...LOGOS];
+---
+<section class="overflow-hidden border-y border-rule bg-paper" aria-label={label}>
+  <div class="px-6 md:px-10 py-6 border-b border-rule/60">
+    <p class="text-xs tracking-wider uppercase text-muted">{label}</p>
+  </div>
+  <div class="conveyor-wrapper py-12 group">
+    <div class="conveyor flex w-max gap-16 items-center will-change-transform">
+      {doubled.map((logo, i) => (
+        <span
+          class="shrink-0 h-12 w-[120px] grid place-items-center"
+          aria-hidden={i >= LOGOS.length ? 'true' : undefined}
+          title={logo.name}
+        >
+          <Icon
+            name={`simple-icons:${logo.slug}`}
+            class="h-9 w-auto text-muted hover:text-ink transition-colors"
+            aria-label={logo.name}
+          />
+        </span>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  @keyframes conveyor {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  .conveyor {
+    animation: conveyor 60s linear infinite;
+  }
+  .conveyor-wrapper:hover .conveyor {
+    animation-play-state: paused;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .conveyor {
+      animation: none;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+    }
+  }
+</style>

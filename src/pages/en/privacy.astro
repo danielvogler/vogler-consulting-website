@@ -1,0 +1,91 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import PageHeader from '~/components/PageHeader.astro';
+import Section from '~/components/Section.astro';
+import { t } from '~/i18n';
+
+const lang = 'en' as const;
+const strings = t(lang);
+const page = strings.pages.datenschutz;
+
+const CONTACT_EMAIL = import.meta.env.CONTACT_EMAIL || 'daniel@vogler-consulting.ch';
+---
+<BaseLayout title={page.title} description="Privacy policy" lang={lang}>
+  <PageHeader heading={page.heading} />
+
+  <Section>
+    <div class="grid grid-cols-12 gap-6 md:gap-10">
+      <div class="col-span-12 md:col-span-3">
+        <p class="text-sm tracking-wider uppercase text-muted">Data controller</p>
+      </div>
+      <div class="col-span-12 md:col-span-9 space-y-4 text-base text-ink/85 leading-relaxed">
+        <p>
+          <strong class="text-ink">VOGLER CONSULTING</strong>, Staeblistr. 1, 8006 Zurich, Switzerland.<br />
+          Contact: <a href={`mailto:${CONTACT_EMAIL}`} class="link-underline">{CONTACT_EMAIL}</a>
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <Section bordered>
+    <div class="grid grid-cols-12 gap-6 md:gap-10">
+      <div class="col-span-12 md:col-span-3">
+        <p class="text-sm tracking-wider uppercase text-muted">Data collection</p>
+      </div>
+      <div class="col-span-12 md:col-span-9 space-y-4 text-base text-ink/85 leading-relaxed max-w-3xl">
+        <p>
+          This website does not collect any personal data through forms, tracking, or analytics tools. No cookies
+          are set.
+        </p>
+        <p>
+          When you visit the website, the hosting provider automatically processes server log data (e.g. IP
+          address, timestamp, requested resource). This data is technically necessary to operate the site and is
+          not used for analytics or marketing purposes.
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <Section bordered>
+    <div class="grid grid-cols-12 gap-6 md:gap-10">
+      <div class="col-span-12 md:col-span-3">
+        <p class="text-sm tracking-wider uppercase text-muted">Hosting</p>
+      </div>
+      <div class="col-span-12 md:col-span-9 text-base text-ink/85 leading-relaxed max-w-3xl">
+        <p>
+          This site is hosted on GitHub Pages (GitHub, Inc., USA). GitHub processes technical log data as part of
+          its operation; details are available in GitHub's privacy policy.
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <Section bordered>
+    <div class="grid grid-cols-12 gap-6 md:gap-10">
+      <div class="col-span-12 md:col-span-3">
+        <p class="text-sm tracking-wider uppercase text-muted">Your rights</p>
+      </div>
+      <div class="col-span-12 md:col-span-9 space-y-4 text-base text-ink/85 leading-relaxed max-w-3xl">
+        <p>
+          Under the revised Swiss Federal Act on Data Protection (revFADP) and the EU General Data Protection
+          Regulation (GDPR), where applicable, you have the right to access, correct, delete, restrict the
+          processing of, and request portability of data concerning you.
+        </p>
+        <p>Requests can be sent to the contact address above.</p>
+      </div>
+    </div>
+  </Section>
+
+  <Section bordered>
+    <div class="grid grid-cols-12 gap-6 md:gap-10">
+      <div class="col-span-12 md:col-span-3">
+        <p class="text-sm tracking-wider uppercase text-muted">Changes</p>
+      </div>
+      <div class="col-span-12 md:col-span-9 text-base text-ink/85 leading-relaxed max-w-3xl">
+        <p>
+          This privacy policy may be updated at any time. The current version published on this website applies.
+        </p>
+      </div>
+    </div>
+  </Section>
+</BaseLayout>

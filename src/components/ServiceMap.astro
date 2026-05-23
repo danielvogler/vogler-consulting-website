@@ -1,0 +1,48 @@
+---
+import { getCollection } from 'astro:content';
+import type { Locale } from '~/i18n';
+import { SERVICE_GROUPS } from '~/data/service-groups';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+
+const services = await getCollection('services', (e) => e.data.lang === lang);
+services.sort((a, b) => a.data.order - b.data.order);
+
+const quadrants = SERVICE_GROUPS.map((group) => ({
+  label: group.labels[lang],
+  items: services.filter((s) => group.tracks.includes(s.data.track)),
+}));
+
+const overviewLabel = lang === 'de' ? 'Leistungen im Überblick' : 'Services overview';
+---
+<section class="px-6 md:px-10 pb-12 md:pb-16" aria-label={overviewLabel}>
+  <div class="mx-auto max-w-(--container-content)">
+    <p class="text-sm tracking-wider uppercase text-accent mb-6">{overviewLabel}</p>
+    <div class="border-t border-rule">
+      {quadrants.map(({ label, items }) => (
+        <div class="grid grid-cols-12 gap-4 md:gap-8 py-5 md:py-6 border-b border-rule">
+          <p class="col-span-12 md:col-span-3 text-xs md:text-sm tracking-wider uppercase text-accent font-medium">
+            {label}
+          </p>
+          <div class="col-span-12 md:col-span-9 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-base text-ink/85">
+            {items.map((s, i, arr) => (
+              <>
+                <a
+                  href={`#service-${s.data.track}`}
+                  class="hover:text-accent transition-colors tracking-tight"
+                >
+                  {s.data.title.replace(/\n/g, ' ')}
+                </a>
+                {i < arr.length - 1 && <span class="text-accent" aria-hidden="true">·</span>}
+              </>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
