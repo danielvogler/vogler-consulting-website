@@ -11,4 +11,4 @@ topics:
   - Guardrails und Kostenkontrolle
 ---
 
-Über den Single-Shot-Agenten hinaus brauchen tiefgreifende agentische Systeme bewusste Architektur: Harnesses, Gedächtnis, Planung, Tool-Use, Recovery, Governance. Wir helfen Teams, Systeme zu entwerfen, die skalieren und nicht an Edge-Cases zerbrechen.
+Über den Single-Shot-Agenten hinaus brauchen tiefgreifende agentische Systeme bewusste Architektur: Harnesses, Gedächtnis, Planung, Tool-Use, Recovery und Governance. Wir helfen Teams, Systeme zu entwerfen, die skalieren und nicht an Edge-Cases zerbrechen.

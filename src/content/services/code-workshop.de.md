@@ -11,4 +11,4 @@ topics:
   - Software-Architektur
 ---
 
-Wie aus Skripten ein wartbares System wird. Wir trainieren Teams in den Praktiken, die hochwertige Python-Codebasen auszeichnen, von Versionskontrolle und CI/CD bis hin zu Testing, Architektur und Qualitätssicherung.
+Vom Skript zum wartbaren System. Wir trainieren Teams in den Praktiken, die hochwertige Python-Codebasen auszeichnen, von Versionskontrolle und CI/CD bis hin zu Testing, Architektur und Qualitätssicherung.

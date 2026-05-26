@@ -25,9 +25,12 @@ const overviewLabel = lang === 'de' ? 'Leistungen im Überblick' : 'Services ove
     <div class="border-t border-rule">
       {quadrants.map(({ label, items }) => (
         <div class="grid grid-cols-12 gap-4 md:gap-8 py-5 md:py-6 border-b border-rule">
-          <p class="col-span-12 md:col-span-3 text-xs md:text-sm tracking-wider uppercase text-accent font-medium">
+          <a
+            href={items.length > 0 ? `#service-${items[0].data.track}` : '#'}
+            class="col-span-12 md:col-span-3 text-xs md:text-sm tracking-wider uppercase !text-accent font-medium hover:opacity-80 transition-opacity"
+          >
             {label}
-          </p>
+          </a>
           <div class="col-span-12 md:col-span-9 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-base text-ink/85">
             {items.map((s, i, arr) => (
               <>

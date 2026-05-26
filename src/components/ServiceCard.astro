@@ -5,11 +5,26 @@ interface Props {
   title: string;
   bluf: string;
   topics?: readonly string[] | string[];
+  track: string;
+  lang: 'de' | 'en';
 }
 
-const { id, number, title, bluf, topics = [] } = Astro.props;
+const { id, number, title, bluf, topics = [], track, lang } = Astro.props;
+
+const SITE = Astro.site?.href.replace(/\/$/, '') ?? 'https://vogler-consulting.ch';
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  '@id': `${SITE}${lang === 'en' ? '/en' : ''}/services#${track}`,
+  name: title.replace(/\n/g, ' '),
+  description: bluf,
+  provider: { '@id': `${SITE}/#organization` },
+  serviceType: 'Professional Service',
+};
 ---
 <article id={id} class="grid grid-cols-12 gap-6 md:gap-10 py-16 border-t border-rule scroll-mt-24">
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} is:inline />
   <header class="col-span-12 md:col-span-3">
     <p class="text-sm tracking-wider uppercase text-accent">{number}</p>
     <h2 class="mt-2 text-3xl md:text-4xl tracking-tighter font-medium whitespace-pre-line">
