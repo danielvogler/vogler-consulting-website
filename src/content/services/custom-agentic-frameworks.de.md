@@ -1,7 +1,7 @@
 ---
 title: |-
   Individuelle
-  KI-Agenten(-systeme)
+  KI-Agenten (-systeme)
 track: agentic-framework
 bluf: Auf Business-Fragestellungen zugeschnittene KI-Agenten und Systeme.
 order: 2

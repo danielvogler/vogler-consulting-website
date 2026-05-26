@@ -1,7 +1,7 @@
 ---
 title: Use-Case-Findung
 track: discovery
-bluf: Wo KI, agentische KI und Analytics Wert schaffen.
+bluf: Wie und wo KI, agentische KI und Analytics Werte schaffen.
 order: 1
 lang: de
 topics:
