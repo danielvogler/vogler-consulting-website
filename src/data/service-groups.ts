@@ -25,7 +25,7 @@ export const SERVICE_GROUPS: readonly ServiceGroup[] = [
   {
     key: 'workshops',
     labels: { de: 'Workshops', en: 'Workshops' },
-    tracks: ['agentic-ai', 'data', 'code', 'cloud'],
+    tracks: ['llm-prompting', 'coding-agents', 'agentic-ai', 'data', 'code', 'cloud'],
   },
 ];
 

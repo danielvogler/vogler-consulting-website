@@ -1,0 +1,51 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import ContactCTA from '~/components/ContactCTA.astro';
+import WorkshopDetail from '~/components/WorkshopDetail.astro';
+import CourseSchema from '~/components/CourseSchema.astro';
+import { isWorkshop, workshopSlug } from '~/data/workshops';
+
+const lang = 'de' as const;
+
+export async function getStaticPaths() {
+  const entries = await getCollection('services', (e) => e.data.lang === 'de' && isWorkshop(e));
+  return entries.map((entry) => ({
+    params: { slug: workshopSlug(entry) },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const CONTACT_EMAIL = import.meta.env.CONTACT_EMAIL || 'daniel@vogler-consulting.ch';
+
+const pageTitle = `${entry.data.title} · VOGLER CONSULTING`;
+
+const labels = {
+  eyebrow: 'Workshop · Auf Anfrage',
+  takeaways: 'Was Sie mitnehmen',
+  audience: 'Für wen',
+  format: 'Format',
+  agenda: 'Ablauf',
+  details: 'Rahmen',
+  duration: 'Dauer',
+  languages: 'Sprachen',
+  locations: 'Orte',
+  booking: 'Buchung',
+};
+---
+<BaseLayout title={pageTitle} description={entry.data.bluf} lang={lang}>
+  <CourseSchema
+    name={entry.data.title}
+    description={entry.data.bluf}
+    teaches={entry.data.topics}
+    languages={entry.data.languages}
+    locations={entry.data.locations}
+    booking={entry.data.booking}
+    duration={entry.data.duration}
+  />
+
+  <WorkshopDetail entry={entry} lang={lang} labels={labels} />
+
+  <ContactCTA lang={lang} contactHref={`mailto:${CONTACT_EMAIL}`} />
+</BaseLayout>

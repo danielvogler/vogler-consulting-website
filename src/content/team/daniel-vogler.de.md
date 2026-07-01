@@ -1,5 +1,5 @@
 ---
-name: Daniel Vogler
+name: Dr. Daniel Vogler
 role: Inhaber & Consultant
 photo: ./daniel-vogler.png
 linkedin: https://www.linkedin.com/in/vogler-daniel/

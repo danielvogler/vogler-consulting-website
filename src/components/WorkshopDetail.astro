@@ -1,0 +1,160 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { render } from 'astro:content';
+import PageHeader from '~/components/PageHeader.astro';
+import Section from '~/components/Section.astro';
+import type { Locale } from '~/i18n';
+
+interface Labels {
+  eyebrow: string;
+  takeaways: string;
+  audience: string;
+  format: string;
+  agenda: string;
+  details: string;
+  duration: string;
+  languages: string;
+  locations: string;
+  booking: string;
+}
+
+interface Props {
+  entry: CollectionEntry<'services'>;
+  lang: Locale;
+  labels: Labels;
+}
+
+const { entry, lang: _lang, labels } = Astro.props;
+const { Content } = await render(entry);
+const {
+  title,
+  bluf,
+  topics,
+  audience,
+  format,
+  duration,
+  languages,
+  locations,
+  booking,
+  agenda,
+} = entry.data;
+---
+<PageHeader number={labels.eyebrow} heading={title} lead={bluf} />
+
+<Section>
+  <div class="grid grid-cols-12 gap-6 md:gap-10">
+    <div class="col-span-12 md:col-span-8 text-base md:text-lg text-muted leading-relaxed max-w-3xl">
+      <Content />
+    </div>
+  </div>
+
+  {topics && topics.length > 0 && (
+    <div class="grid grid-cols-12 gap-6 md:gap-10 mt-16 pt-16 border-t border-rule">
+      <header class="col-span-12 md:col-span-3">
+        <h2 class="text-sm tracking-wider uppercase text-accent">{labels.takeaways}</h2>
+      </header>
+      <ul class="col-span-12 md:col-span-9 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 text-base text-ink/90 max-w-3xl">
+        {topics.map((topic) => (
+          <li class="flex items-baseline gap-2">
+            <span class="text-accent">·</span>
+            <span>{topic}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )}
+
+  {audience && audience.length > 0 && (
+    <div class="grid grid-cols-12 gap-6 md:gap-10 mt-16 pt-16 border-t border-rule">
+      <header class="col-span-12 md:col-span-3">
+        <h2 class="text-sm tracking-wider uppercase text-accent">{labels.audience}</h2>
+      </header>
+      <ul class="col-span-12 md:col-span-9 space-y-2 text-base text-ink/90 max-w-3xl">
+        {audience.map((line) => (
+          <li class="flex items-baseline gap-2">
+            <span class="text-accent">·</span>
+            <span>{line}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )}
+
+  {format && format.length > 0 && (
+    <div class="grid grid-cols-12 gap-6 md:gap-10 mt-16 pt-16 border-t border-rule">
+      <header class="col-span-12 md:col-span-3">
+        <h2 class="text-sm tracking-wider uppercase text-accent">{labels.format}</h2>
+      </header>
+      <ul class="col-span-12 md:col-span-9 space-y-2 text-base text-ink/90 max-w-3xl">
+        {format.map((line) => (
+          <li class="flex items-baseline gap-2">
+            <span class="text-accent">·</span>
+            <span>{line}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )}
+
+  {agenda && agenda.length > 0 && (
+    <div class="grid grid-cols-12 gap-6 md:gap-10 mt-16 pt-16 border-t border-rule">
+      <header class="col-span-12 md:col-span-3">
+        <h2 class="text-sm tracking-wider uppercase text-accent">{labels.agenda}</h2>
+      </header>
+      <ol class="col-span-12 md:col-span-9 space-y-6 max-w-3xl">
+        {agenda.map((item, i) => (
+          <li class="grid grid-cols-12 gap-4 border-b border-rule/60 pb-4">
+            <p class="col-span-1 text-sm tracking-wider text-accent pt-1">
+              {String(i + 1).padStart(2, '0')}
+            </p>
+            <div class="col-span-8">
+              <p class="text-lg tracking-tight text-ink">{item.title}</p>
+              <p class="mt-1 text-sm text-muted leading-relaxed">
+                {item.description}
+              </p>
+            </div>
+            {item.duration && (
+              <p class="col-span-3 text-sm text-muted text-right pt-1">
+                {item.duration}
+              </p>
+            )}
+          </li>
+        ))}
+      </ol>
+    </div>
+  )}
+
+  {(duration || languages || locations || booking) && (
+    <div class="grid grid-cols-12 gap-6 md:gap-10 mt-16 pt-16 border-t border-rule">
+      <header class="col-span-12 md:col-span-3">
+        <h2 class="text-sm tracking-wider uppercase text-accent">{labels.details}</h2>
+      </header>
+      <dl class="col-span-12 md:col-span-9 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6 max-w-3xl text-base text-ink/90">
+        {duration && (
+          <div>
+            <dt class="text-sm tracking-wider uppercase text-muted">{labels.duration}</dt>
+            <dd class="mt-1">{duration}</dd>
+          </div>
+        )}
+        {languages && languages.length > 0 && (
+          <div>
+            <dt class="text-sm tracking-wider uppercase text-muted">{labels.languages}</dt>
+            <dd class="mt-1">{languages.join(' · ')}</dd>
+          </div>
+        )}
+        {booking && (
+          <div>
+            <dt class="text-sm tracking-wider uppercase text-muted">{labels.booking}</dt>
+            <dd class="mt-1">{booking}</dd>
+          </div>
+        )}
+        {locations && locations.length > 0 && (
+          <div class="sm:col-span-2">
+            <dt class="text-sm tracking-wider uppercase text-muted">{labels.locations}</dt>
+            <dd class="mt-1">{locations.join(' · ')}</dd>
+          </div>
+        )}
+      </dl>
+    </div>
+  )}
+</Section>

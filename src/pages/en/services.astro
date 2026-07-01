@@ -9,10 +9,12 @@ import ContactCTA from '~/components/ContactCTA.astro';
 import LogoConveyor from '~/components/LogoConveyor.astro';
 import { t } from '~/i18n';
 import { labelForTrack } from '~/data/service-groups';
+import { isWorkshop, workshopHref } from '~/data/workshops';
 
 const lang = 'en' as const;
 const strings = t(lang);
 const page = strings.pages.services;
+const detailLabel = 'View workshop';
 
 const all = await getCollection('services', (e) => e.data.lang === lang);
 all.sort((a, b) => a.data.order - b.data.order);
@@ -25,6 +27,7 @@ const services = await Promise.all(
       data: entry.data,
       Content,
       number: `${String(i + 1).padStart(2, '0')} / ${group}`,
+      detailHref: isWorkshop(entry) ? workshopHref(entry) : undefined,
     };
   }),
 );
@@ -37,7 +40,7 @@ const CONTACT_EMAIL = import.meta.env.CONTACT_EMAIL || 'daniel@vogler-consulting
   <ServiceMap lang={lang} />
 
   <Section>
-    {services.map(({ data, Content, number }) => (
+    {services.map(({ data, Content, number, detailHref }) => (
       <ServiceCard
         id={`service-${data.track}`}
         number={number}
@@ -46,6 +49,8 @@ const CONTACT_EMAIL = import.meta.env.CONTACT_EMAIL || 'daniel@vogler-consulting
         topics={data.topics}
         track={data.track}
         lang={lang}
+        detailHref={detailHref}
+        detailLabel={detailHref ? detailLabel : undefined}
       >
         <Content />
       </ServiceCard>

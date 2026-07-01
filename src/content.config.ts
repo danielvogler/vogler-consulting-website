@@ -18,11 +18,29 @@ const services = defineCollection({
       'data',
       'code',
       'cloud',
+      'coding-agents',
+      'llm-prompting',
     ]),
     bluf: z.string(),
     order: z.number(),
     lang: langField,
     topics: z.array(z.string()).optional(),
+    // Workshop-specific optional detail fields (used on /workshops/[slug] pages).
+    audience: z.array(z.string()).optional(),
+    format: z.array(z.string()).optional(),
+    duration: z.string().optional(),
+    languages: z.array(z.string()).optional(),
+    locations: z.array(z.string()).optional(),
+    booking: z.string().optional(),
+    agenda: z
+      .array(
+        z.object({
+          title: z.string(),
+          description: z.string(),
+          duration: z.string().optional(),
+        }),
+      )
+      .optional(),
   }),
 });
 
