@@ -7,9 +7,11 @@ interface Props {
   topics?: readonly string[] | string[];
   track: string;
   lang: 'de' | 'en';
+  detailHref?: string;
+  detailLabel?: string;
 }
 
-const { id, number, title, bluf, topics = [], track, lang } = Astro.props;
+const { id, number, title, bluf, topics = [], track, lang, detailHref, detailLabel } = Astro.props;
 
 const SITE = Astro.site?.href.replace(/\/$/, '') ?? 'https://vogler-consulting.ch';
 
@@ -47,6 +49,16 @@ const serviceSchema = {
           </li>
         ))}
       </ul>
+    )}
+    {detailHref && detailLabel && (
+      <p class="pt-2">
+        <a
+          href={detailHref}
+          class="inline-flex items-center text-sm tracking-tight border-b border-ink hover:border-accent hover:text-accent transition-colors pb-0.5"
+        >
+          {detailLabel} →
+        </a>
+      </p>
     )}
   </div>
 </article>

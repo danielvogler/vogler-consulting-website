@@ -1,5 +1,6 @@
 ---
 import type { Locale } from '~/i18n';
+import { SWISS_CITIES } from '~/data/cities';
 
 interface ServiceProps {
   name: string;
@@ -17,6 +18,17 @@ const { lang, type = 'org', service } = Astro.props;
 
 const SITE = import.meta.env.SITE_URL ?? 'https://vogler-consulting.ch';
 const CONTACT_EMAIL = import.meta.env.CONTACT_EMAIL || 'daniel@vogler-consulting.ch';
+
+const cityServices = SWISS_CITIES.map((c) => ({
+  '@type': 'City',
+  name: c.name,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: c.name,
+    addressCountry: 'CH',
+  },
+  geo: { '@type': 'GeoCoordinates', latitude: c.lat, longitude: c.lng },
+}));
 
 const organization = {
   '@type': 'ProfessionalService',
@@ -40,6 +52,7 @@ const organization = {
     { '@type': 'Country', name: 'Switzerland' },
     { '@type': 'Country', name: 'Germany' },
     { '@type': 'Country', name: 'Austria' },
+    ...cityServices,
   ],
   knowsAbout: [
     'Data Engineering',
@@ -50,6 +63,9 @@ const organization = {
     'Google Cloud',
     'Kubernetes',
     'Python',
+    'Prompt Engineering',
+    'Coding Agents',
+    'Large Language Models',
   ],
   taxID: 'CHE-191.414.241',
   email: CONTACT_EMAIL,
@@ -61,6 +77,13 @@ const daniel = {
   '@type': 'Person',
   '@id': `${SITE}/#daniel-vogler`,
   name: 'Daniel Vogler',
+  honorificPrefix: 'Dr.',
+  hasCredential: {
+    '@type': 'EducationalOccupationalCredential',
+    credentialCategory: 'degree',
+    educationalLevel: 'doctorate',
+    name: 'Dr. sc. ETH Zürich',
+  },
   jobTitle: lang === 'de' ? 'Inhaber & Consultant' : 'Founder & Consultant',
   worksFor: { '@id': `${SITE}/#organization` },
   alumniOf: [
