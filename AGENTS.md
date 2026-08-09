@@ -35,8 +35,15 @@ Requires Node 22.12+ (see `.nvmrc`) and pnpm 9 (pinned via `packageManager` in
 ```bash
 nvm use
 pnpm install
-cp .env.example .env.local   # optional, for local overrides
+cp .env.example .env.local          # optional, for local overrides
+git config core.hooksPath .githooks # once per clone, enables the pre-commit guard
+brew install gitleaks               # the guard degrades to a warning without it
 ```
+
+The pre-commit hook blocks local-only paths and runs a secret scan over the
+staged changes. On a public repository that deploys on push, a secret caught
+after the push is a secret that is already public, so this is the check that
+actually matters.
 
 ## Commands
 

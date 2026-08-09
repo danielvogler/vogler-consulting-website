@@ -9,8 +9,12 @@
 // the ones that fail.
 
 import { execFileSync, execSync } from 'node:child_process';
-import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
-import { join, relative } from 'node:path';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { join } from 'node:path';
+
+// These two files spell out the patterns being searched for, so a content scan
+// will always match them. Everything else is fair game.
+const SELF_REFERENTIAL = new Set(['AGENTS.md', 'scripts/verify.mjs']);
 
 const ROOT = new URL('..', import.meta.url).pathname;
 const SKIP_BUILD = process.argv.includes('--skip-build');
@@ -36,29 +40,23 @@ const CREDENTIAL_PATTERNS = [
   [/[A-Za-z0-9._%+-]+@gmail\.com/, 'personal email address'],
 ];
 
-const SCAN_DIRS = ['src', 'public'];
-const SCAN_ROOT_FILES = ['README.md', 'AGENTS.md', 'CLAUDE.md', 'GEMINI.md'];
-const SKIP_DIRS = new Set(['node_modules', 'dist', '.astro', '.git']);
 const BINARY_EXT = /\.(png|jpe?g|webp|avif|gif|ico|woff2?|pdf|pptx?|docx?)$/i;
+// Generated or vendored, not worth scanning and noisy if we do.
+const SCAN_EXCLUDE = /^(pnpm-lock\.yaml|LICENSE)$/;
 
-function walk(dir, out = []) {
-  if (!existsSync(dir)) return out;
-  for (const name of readdirSync(dir)) {
-    if (SKIP_DIRS.has(name)) continue;
-    const full = join(dir, name);
-    if (statSync(full).isDirectory()) walk(full, out);
-    else if (!BINARY_EXT.test(name)) out.push(full);
-  }
-  return out;
-}
-
+/**
+ * Every tracked text file. Using git's index rather than a directory walk means
+ * the scan covers workflows, scripts and config too, and can never reach the
+ * gitignored local-only directories.
+ */
+let scanCache;
 function scanFiles() {
-  const files = SCAN_DIRS.flatMap((d) => walk(join(ROOT, d)));
-  for (const f of SCAN_ROOT_FILES) {
-    const full = join(ROOT, f);
-    if (existsSync(full)) files.push(full);
-  }
-  return files.map((path) => ({ path, rel: relative(ROOT, path) }));
+  scanCache ??= execFileSync('git', ['ls-files'], { cwd: ROOT, encoding: 'utf8' })
+    .split('\n')
+    .filter((rel) => rel && !BINARY_EXT.test(rel) && !SCAN_EXCLUDE.test(rel))
+    .map((rel) => ({ rel, path: join(ROOT, rel) }))
+    .filter(({ path }) => existsSync(path));
+  return scanCache;
 }
 
 /** Minimal frontmatter reader: top-level keys, and list lengths for sequences. */
@@ -120,7 +118,7 @@ check('formatting', () => {
 check('no em-dashes', () => {
   const failures = [];
   for (const { path, rel } of scanFiles()) {
-    if (rel === 'AGENTS.md') continue; // documents the rule, may quote the character
+    if (SELF_REFERENTIAL.has(rel)) continue;
     readFileSync(path, 'utf8')
       .split('\n')
       .forEach((line, i) => {
@@ -133,8 +131,7 @@ check('no em-dashes', () => {
 check('no credentials', () => {
   const failures = [];
   for (const { path, rel } of scanFiles()) {
-    // AGENTS.md documents the patterns themselves, so it would always match.
-    if (rel === 'AGENTS.md') continue;
+    if (SELF_REFERENTIAL.has(rel)) continue;
     readFileSync(path, 'utf8')
       .split('\n')
       .forEach((line, i) => {
