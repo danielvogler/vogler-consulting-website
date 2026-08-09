@@ -1,21 +1,31 @@
 # VOGLER CONSULTING
 
-> Swiss consulting firm for AI, agentic AI, analytics, and data. We deliver custom end-to-end applications and pipelines, advise on agentic-AI architecture, run use-case discovery and enterprise RAG deployments, and offer hands-on workshops for organisations in DACH.
+> Swiss consulting firm for AI, agentic AI, analytics, and data. We run AI roadmap and use-case discovery engagements, build custom agents, deep agentic systems, data applications and enterprise RAG deployments, and deliver hands-on workshops for organisations in DACH. Cloud, sovereign cloud, or on-premises.
 
-## Services
+## Consulting
 
-- [Services overview](https://vogler-consulting.ch/services): Workshops and bespoke end-to-end delivery.
-- [Data workshop](https://vogler-consulting.ch/services): Data management, modelling, processing.
-- [Code workshop](https://vogler-consulting.ch/services): Modern Python stack, CI/CD, testing, software architecture.
-- [Cloud workshop](https://vogler-consulting.ch/services): Cloud concepts, orchestration, observability, security, dashboards.
-- [Agentic AI workshop](https://vogler-consulting.ch/services): Concepts, system and cognitive architecture, frameworks, reliability, governance.
-- [End-to-end delivery](https://vogler-consulting.ch/services): Cloud-based data-science pipelines, production-ready.
+- [Services overview](https://vogler-consulting.ch/en/services): All consulting services and workshops.
+- [AI Roadmap](https://vogler-consulting.ch/en/services/ai-roadmap): From business goals to a sequenced AI roadmap, with target architecture, operating model, and governance.
+- [Custom use-case discovery](https://vogler-consulting.ch/en/services/use-case-discovery): Opportunity mapping, feasibility, risk, and a prioritised backlog.
+- [Custom AI agents](https://vogler-consulting.ch/en/services/custom-agentic-frameworks): Agents and agent systems tailored to a domain, with quality metrics and observability.
+- [Personal AI assistants](https://vogler-consulting.ch/en/services/agentic-install-optimization): Secure assistants on your own device or in controlled cloud, reachable on the go.
+- [Deep agentic systems](https://vogler-consulting.ch/en/services/deep-agentic-systems): Autonomous research and software development, harness architecture, and the practice to run it.
+- [Data apps & pipelines](https://vogler-consulting.ch/en/services/end-to-end-delivery): Data-science and analytics applications, pipelines, and data products, built and operated end-to-end.
+- [Enterprise RAG deployment](https://vogler-consulting.ch/en/services/enterprise-rag): Grounded, citable answers across your document corpus, with access control.
+
+## Workshops
+
+- [LLMs & prompt engineering](https://vogler-consulting.ch/en/workshops/llm-prompting)
+- [Coding agents](https://vogler-consulting.ch/en/workshops/coding-agents)
+- [Agentic AI](https://vogler-consulting.ch/en/workshops/agentic-ai)
+- [Data](https://vogler-consulting.ch/en/workshops/data)
+- [Code](https://vogler-consulting.ch/en/workshops/code)
+- [Cloud](https://vogler-consulting.ch/en/workshops/cloud)
 
 ## About
 
-- [Company](https://vogler-consulting.ch/about): Mission, approach, values.
-- [Team](https://vogler-consulting.ch/team): Consultant network.
-- [Partners & Projects](https://vogler-consulting.ch/partners): Selected references.
+- [Company](https://vogler-consulting.ch/en/about): Mission, approach, values.
+- [Team](https://vogler-consulting.ch/en/team): Consultant network and partners.
 
 ## Languages
 

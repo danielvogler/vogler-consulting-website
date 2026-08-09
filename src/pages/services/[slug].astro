@@ -1,0 +1,56 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import ContactCTA from '~/components/ContactCTA.astro';
+import ServiceDetail from '~/components/ServiceDetail.astro';
+import ServiceSchema from '~/components/ServiceSchema.astro';
+import { CONTACT_EMAIL } from '~/data/contact';
+import { hasServiceDetail, serviceDetailSlug } from '~/data/service-details';
+import { labelForTrack } from '~/data/service-groups';
+
+const lang = 'de' as const;
+
+export async function getStaticPaths() {
+  const entries = await getCollection(
+    'services',
+    (e) => e.data.lang === 'de' && hasServiceDetail(e),
+  );
+  return entries.map((entry) => ({
+    params: { slug: serviceDetailSlug(entry) },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+
+const pageTitle = `${entry.data.title} · VOGLER CONSULTING`;
+
+const labels = {
+  eyebrow: `Leistung · ${labelForTrack(entry.data.track, lang)}`,
+  situation: 'Ausgangslage',
+  approach: 'Vorgehen',
+  deliverable: 'Ergebnis:',
+  workstreams: 'Handlungsfelder',
+  outcomes: 'Was Sie erhalten',
+  frame: 'Rahmen',
+  duration: 'Dauer',
+  involvement: 'Beteiligte',
+  format: 'Format',
+  entryPoint: 'Einstieg',
+};
+---
+
+<BaseLayout title={pageTitle} description={entry.data.bluf} lang={lang}>
+  <ServiceSchema
+    name={entry.data.title.replace(/\n/g, ' ')}
+    description={entry.data.bluf}
+    servicesHref="/services"
+    servicesLabel="Leistungen"
+    workstreams={entry.data.workstreams}
+    outcomes={entry.data.outcomes}
+  />
+
+  <ServiceDetail entry={entry} lang={lang} labels={labels} />
+
+  <ContactCTA lang={lang} contactHref={`mailto:${CONTACT_EMAIL}`} />
+</BaseLayout>

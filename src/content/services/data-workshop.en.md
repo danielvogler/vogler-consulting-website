@@ -2,7 +2,7 @@
 title: Data Workshop
 track: data
 bluf: Data as a first-class product, from raw input to modelling and management.
-order: 10
+order: 11
 lang: en
 topics:
   - Data as a product

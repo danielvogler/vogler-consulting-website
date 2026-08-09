@@ -2,7 +2,7 @@
 title: Coding-Agenten Workshop
 track: coding-agents
 bluf: Code Assistants, skaliert bis zur vollen Autonomie.
-order: 8
+order: 9
 lang: de
 topics:
   - Werkzeuge (Claude Code, Codex, Antigravity)

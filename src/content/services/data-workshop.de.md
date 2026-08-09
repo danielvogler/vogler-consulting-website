@@ -2,7 +2,7 @@
 title: Daten Workshop
 track: data
 bluf: Daten als erstklassiges Produkt, vom Rohinput bis zu Modellierung und Management.
-order: 10
+order: 11
 lang: de
 topics:
   - Daten als Produkt

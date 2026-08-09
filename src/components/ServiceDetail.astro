@@ -1,0 +1,191 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { render } from 'astro:content';
+import PageHeader from '~/components/PageHeader.astro';
+import Section from '~/components/Section.astro';
+import type { Locale } from '~/i18n';
+
+interface Labels {
+  eyebrow: string;
+  situation: string;
+  approach: string;
+  deliverable: string;
+  workstreams: string;
+  outcomes: string;
+  frame: string;
+  duration: string;
+  involvement: string;
+  format: string;
+  entryPoint: string;
+}
+
+interface Props {
+  entry: CollectionEntry<'services'>;
+  lang: Locale;
+  labels: Labels;
+}
+
+const { entry, lang: _lang, labels } = Astro.props;
+const { Content } = await render(entry);
+const {
+  title,
+  bluf,
+  situation,
+  approach,
+  workstreams,
+  outcomes,
+  duration,
+  involvement,
+  format,
+  entryPoint,
+} = entry.data;
+
+// `situation` is authored as prose and may run to several paragraphs.
+const situationParagraphs = situation?.split(/\n{2,}/).filter(Boolean) ?? [];
+const hasFrame = Boolean(duration || entryPoint || involvement?.length || format?.length);
+---
+
+<PageHeader number={labels.eyebrow} heading={title} lead={bluf} />
+
+<Section>
+  <div class="grid grid-cols-12 gap-6 md:gap-10">
+    <div
+      class="col-span-12 md:col-span-8 text-base md:text-lg text-muted leading-relaxed max-w-3xl"
+    >
+      <Content />
+    </div>
+  </div>
+
+  {
+    situationParagraphs.length > 0 && (
+      <div class="grid grid-cols-12 gap-6 md:gap-10 mt-16 pt-16 border-t border-rule">
+        <header class="col-span-12 md:col-span-3">
+          <h2 class="text-sm tracking-wider uppercase text-accent">{labels.situation}</h2>
+        </header>
+        <div class="col-span-12 md:col-span-9 space-y-4 text-base text-ink/90 leading-relaxed max-w-3xl">
+          {situationParagraphs.map((paragraph) => (
+            <p>{paragraph}</p>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  {
+    approach && approach.length > 0 && (
+      <div class="grid grid-cols-12 gap-6 md:gap-10 mt-16 pt-16 border-t border-rule">
+        <header class="col-span-12 md:col-span-3">
+          <h2 class="text-sm tracking-wider uppercase text-accent">{labels.approach}</h2>
+        </header>
+        <ol class="col-span-12 md:col-span-9 space-y-6 max-w-3xl">
+          {approach.map((phase, i) => (
+            <li class="grid grid-cols-12 gap-4 border-b border-rule/60 pb-5">
+              <p class="col-span-1 text-sm tracking-wider text-accent pt-1">
+                {String(i + 1).padStart(2, '0')}
+              </p>
+              <div class="col-span-11">
+                <p class="text-lg tracking-tight text-ink">{phase.title}</p>
+                <p class="mt-1 text-sm text-muted leading-relaxed">{phase.description}</p>
+                {phase.deliverable && (
+                  <p class="mt-3 text-sm text-ink/80">
+                    <span class="text-accent">{labels.deliverable}</span> {phase.deliverable}
+                  </p>
+                )}
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    )
+  }
+
+  {
+    workstreams && workstreams.length > 0 && (
+      <div class="grid grid-cols-12 gap-6 md:gap-10 mt-16 pt-16 border-t border-rule">
+        <header class="col-span-12 md:col-span-3">
+          <h2 class="text-sm tracking-wider uppercase text-accent">{labels.workstreams}</h2>
+        </header>
+        <ul class="col-span-12 md:col-span-9 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-8 max-w-3xl">
+          {workstreams.map((stream) => (
+            <li>
+              <p class="text-base tracking-tight text-ink">{stream.title}</p>
+              <p class="mt-1 text-sm text-muted leading-relaxed">{stream.description}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )
+  }
+
+  {
+    outcomes && outcomes.length > 0 && (
+      <div class="grid grid-cols-12 gap-6 md:gap-10 mt-16 pt-16 border-t border-rule">
+        <header class="col-span-12 md:col-span-3">
+          <h2 class="text-sm tracking-wider uppercase text-accent">{labels.outcomes}</h2>
+        </header>
+        <ul class="col-span-12 md:col-span-9 space-y-2 text-base text-ink/90 max-w-3xl">
+          {outcomes.map((line) => (
+            <li class="flex items-baseline gap-2">
+              <span class="text-accent">·</span>
+              <span>{line}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )
+  }
+
+  {
+    hasFrame && (
+      <div class="grid grid-cols-12 gap-6 md:gap-10 mt-16 pt-16 border-t border-rule">
+        <header class="col-span-12 md:col-span-3">
+          <h2 class="text-sm tracking-wider uppercase text-accent">{labels.frame}</h2>
+        </header>
+        <dl class="col-span-12 md:col-span-9 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6 max-w-3xl text-base text-ink/90">
+          {duration && (
+            <div>
+              <dt class="text-sm tracking-wider uppercase text-muted">{labels.duration}</dt>
+              <dd class="mt-1">{duration}</dd>
+            </div>
+          )}
+          {entryPoint && (
+            <div>
+              <dt class="text-sm tracking-wider uppercase text-muted">{labels.entryPoint}</dt>
+              <dd class="mt-1">{entryPoint}</dd>
+            </div>
+          )}
+          {involvement && involvement.length > 0 && (
+            <div>
+              <dt class="text-sm tracking-wider uppercase text-muted">{labels.involvement}</dt>
+              <dd class="mt-1">
+                <ul class="space-y-1">
+                  {involvement.map((line) => (
+                    <li class="flex items-baseline gap-2">
+                      <span class="text-accent">·</span>
+                      <span>{line}</span>
+                    </li>
+                  ))}
+                </ul>
+              </dd>
+            </div>
+          )}
+          {format && format.length > 0 && (
+            <div>
+              <dt class="text-sm tracking-wider uppercase text-muted">{labels.format}</dt>
+              <dd class="mt-1">
+                <ul class="space-y-1">
+                  {format.map((line) => (
+                    <li class="flex items-baseline gap-2">
+                      <span class="text-accent">·</span>
+                      <span>{line}</span>
+                    </li>
+                  ))}
+                </ul>
+              </dd>
+            </div>
+          )}
+        </dl>
+      </div>
+    )
+  }
+</Section>

@@ -10,11 +10,12 @@ import LogoConveyor from '~/components/LogoConveyor.astro';
 import { t } from '~/i18n';
 import { labelForTrack } from '~/data/service-groups';
 import { isWorkshop, workshopHref } from '~/data/workshops';
+import { hasServiceDetail, serviceDetailHref } from '~/data/service-details';
+import { CONTACT_EMAIL } from '~/data/contact';
 
 const lang = 'de' as const;
 const strings = t(lang);
 const page = strings.pages.services;
-const detailLabel = 'Zum Workshop';
 
 const all = await getCollection('services', (e) => e.data.lang === lang);
 all.sort((a, b) => a.data.order - b.data.order);
@@ -27,12 +28,15 @@ const services = await Promise.all(
       data: entry.data,
       Content,
       number: `${String(i + 1).padStart(2, '0')} / ${group}`,
-      detailHref: isWorkshop(entry) ? workshopHref(entry) : undefined,
+      detailHref: isWorkshop(entry)
+        ? workshopHref(entry)
+        : hasServiceDetail(entry)
+          ? serviceDetailHref(entry)
+          : undefined,
+      detailLabel: isWorkshop(entry) ? 'Zum Workshop' : 'Zum Vorgehen',
     };
   }),
 );
-
-const CONTACT_EMAIL = import.meta.env.CONTACT_EMAIL || 'daniel@vogler-consulting.ch';
 ---
 <BaseLayout title={page.title} description={page.lead} lang={lang}>
   <PageHeader number="01 / Leistungen" heading={page.heading} lead={page.lead} />
@@ -40,7 +44,7 @@ const CONTACT_EMAIL = import.meta.env.CONTACT_EMAIL || 'daniel@vogler-consulting
   <ServiceMap lang={lang} />
 
   <Section>
-    {services.map(({ data, Content, number, detailHref }) => (
+    {services.map(({ data, Content, number, detailHref, detailLabel }) => (
       <ServiceCard
         id={`service-${data.track}`}
         number={number}

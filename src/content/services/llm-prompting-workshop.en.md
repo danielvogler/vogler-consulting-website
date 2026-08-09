@@ -2,7 +2,7 @@
 title: LLMs & Prompt Engineering Workshop
 track: llm-prompting
 bluf: Prompt engineering as a durable system, in projects and teams.
-order: 7
+order: 8
 lang: en
 topics:
   - LLM fundamentals and prompt architecture
