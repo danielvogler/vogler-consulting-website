@@ -29,21 +29,58 @@ immediately. Work accordingly.
 
 ## Setup
 
-Requires Node 22.12+ (see `.nvmrc`) and pnpm 9 (pinned via `packageManager` in
-`package.json`).
+| Requirement | Version             | How                                         |
+| ----------- | ------------------- | ------------------------------------------- |
+| Node        | 22.12+, `.nvmrc`    | `nvm install && nvm use`                    |
+| pnpm        | 9, `packageManager` | `corepack enable`                           |
+| gitleaks    | any recent          | `brew install gitleaks`, maintainer runs it |
+
+Nothing else is needed. Prettier, Astro and TypeScript come from
+`pnpm install`; anything else a task calls for should be a one-off `npx`
+invocation with its binary kept outside the repository.
 
 ```bash
-nvm use
+nvm install && nvm use
+corepack enable
 pnpm install
 cp .env.example .env.local          # optional, for local overrides
-git config core.hooksPath .githooks # once per clone, enables the pre-commit guard
-brew install gitleaks               # the guard degrades to a warning without it
+git config core.hooksPath .githooks # once per clone, arms the guards
+pnpm verify                         # confirms the setup end to end
 ```
 
-The pre-commit hook blocks local-only paths and runs a secret scan over the
-staged changes. On a public repository that deploys on push, a secret caught
-after the push is a secret that is already public, so this is the check that
-actually matters.
+`git config core.hooksPath` is per clone and is not carried in the repository,
+so a fresh clone is unprotected until it is run. The pre-commit hook blocks
+local-only paths and scans staged changes for secrets; the commit-msg hook
+checks the message against `.leakwords`. Without gitleaks installed the secret
+scan degrades to a warning rather than failing, so the hook still runs but
+catches less.
+
+On a public repository that deploys on push, a secret caught after the push is
+a secret that is already public. These local guards are the ones that matter.
+
+### What an agent may install, and what it must hand back
+
+Run these without asking. They are project-local and reversible:
+
+- `pnpm install`, `pnpm install --frozen-lockfile`, `nvm use`
+- `git config core.hooksPath .githooks`, and other repo-local git config
+- `cp .env.example .env.local`
+- `npx <tool>` for a one-off, with any downloaded binary kept in a scratch
+  directory outside the repository
+
+Stop and hand these to the maintainer. They change the machine, the supply
+chain, or an account:
+
+- System package managers and anything needing `sudo`: `brew install gitleaks`
+  is the maintainer's to run. Say what is missing and what it unlocks.
+- Global npm installs. Never `npm install -g`.
+- New entries in `package.json`. Propose them with a reason: a dependency
+  changes the lockfile and the supply chain of a public repository, and it is
+  usually avoidable. `scripts/verify.mjs` is deliberately dependency-free.
+- Interactive logins: `gh auth login`, `gcloud auth login`, and similar.
+- Anything under GitHub repository settings: rulesets, required status checks,
+  secrets, Pages configuration.
+- DNS, domain, and mail configuration.
 
 ## Commands
 
