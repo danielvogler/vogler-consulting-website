@@ -15,12 +15,12 @@ interface Props {
 
 const { title, description, lang = 'de' } = Astro.props;
 
-
 const strings = t(lang);
 const navLinks = getNavLinks(lang);
 const legalLinks = getLegalLinks(lang);
 const contactHref = `mailto:${CONTACT_EMAIL}`;
 ---
+
 <!doctype html>
 <html lang={lang === 'de' ? 'de-CH' : 'en'}>
   <head>

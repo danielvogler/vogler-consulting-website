@@ -10,6 +10,7 @@ const lang = 'de' as const;
 const strings = t(lang);
 const page = strings.pages.about;
 ---
+
 <BaseLayout title={page.title} description={page.lead} lang={lang}>
   <PageHeader number="02 / Über uns" heading={page.heading} lead={page.lead} />
 
@@ -18,16 +19,18 @@ const page = strings.pages.about;
       <div class="col-span-12 md:col-span-3">
         <p class="text-sm tracking-wider uppercase text-accent">Ansatz</p>
       </div>
-      <div class="col-span-12 md:col-span-9 space-y-6 text-lg text-ink/85 leading-relaxed max-w-3xl">
+      <div
+        class="col-span-12 md:col-span-9 space-y-6 text-lg text-ink/85 leading-relaxed max-w-3xl"
+      >
         <p>
-          VOGLER CONSULTING ist ein Schweizer Unternehmen mit Fokus auf datengetriebene und agentische KI-Lösungen.
-          Wir kombinieren saubere Daten-Engineering-Praktiken mit modernen Cloud-Architekturen und liefern messbare
-          Resultate, keine Demos.
+          VOGLER CONSULTING ist ein Schweizer Unternehmen mit Fokus auf datengetriebene und
+          agentische KI-Lösungen. Wir kombinieren saubere Daten-Engineering-Praktiken mit modernen
+          Cloud-Architekturen und liefern messbare Resultate, keine Demos.
         </p>
         <p>
-          Wir arbeiten in drei Modi: als Delivery-Partner für massgeschneiderte Anwendungen, Pipelines und Produkte,
-          als Sparring-Partner für Strategie, Roadmap und interne Initiativen, oder als Workshop-Partner, der Teams
-          in die richtigen Praktiken einführt.
+          Wir arbeiten in drei Modi: als Delivery-Partner für massgeschneiderte Anwendungen,
+          Pipelines und Produkte, als Sparring-Partner für Strategie, Roadmap und interne
+          Initiativen, oder als Workshop-Partner, der Teams in die richtigen Praktiken einführt.
         </p>
       </div>
     </div>

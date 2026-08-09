@@ -8,24 +8,31 @@ interface Props {
 
 const { number, title, description, href } = Astro.props;
 ---
+
 <a
   href={href}
   class="group relative block py-10 border-t border-rule hover:border-ink transition-colors"
 >
   <div class="grid grid-cols-12 gap-6 items-baseline">
-    <span class="col-span-2 md:col-span-1 text-sm tracking-wider text-muted group-hover:text-accent transition-colors">
+    <span
+      class="col-span-2 md:col-span-1 text-sm tracking-wider text-muted group-hover:text-accent transition-colors"
+    >
       {number}
     </span>
-    <h2 class="col-span-8 md:col-span-9 text-3xl md:text-5xl tracking-tighter font-medium transition-transform group-hover:-translate-y-0.5">
+    <h2
+      class="col-span-8 md:col-span-9 text-3xl md:text-5xl tracking-tighter font-medium transition-transform group-hover:-translate-y-0.5"
+    >
       {title}
     </h2>
-    <span class="col-span-2 text-right text-2xl text-muted group-hover:text-accent group-hover:translate-x-1 transition-all">
+    <span
+      class="col-span-2 text-right text-2xl text-muted group-hover:text-accent group-hover:translate-x-1 transition-all"
+    >
       →
     </span>
   </div>
-  {description && (
-    <p class="mt-3 ml-[16.66%] md:ml-[8.33%] max-w-xl text-sm text-muted">
-      {description}
-    </p>
-  )}
+  {
+    description && (
+      <p class="mt-3 ml-[16.66%] md:ml-[8.33%] max-w-xl text-sm text-muted">{description}</p>
+    )
+  }
 </a>

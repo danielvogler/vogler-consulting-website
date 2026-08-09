@@ -11,22 +11,12 @@ interface Props {
   duration?: string;
 }
 
-const {
-  name,
-  description,
-  teaches,
-  languages,
-  locations,
-  booking,
-  duration,
-} = Astro.props;
+const { name, description, teaches, languages, locations, booking, duration } = Astro.props;
 
 const SITE = import.meta.env.SITE_URL ?? 'https://vogler-consulting.ch';
 
-const hasRemote =
-  locations?.some((loc) => /remote|online/i.test(loc)) ?? false;
-const onsiteCities =
-  locations?.filter((loc) => !/remote|online/i.test(loc)) ?? [];
+const hasRemote = locations?.some((loc) => /remote|online/i.test(loc)) ?? false;
+const onsiteCities = locations?.filter((loc) => !/remote|online/i.test(loc)) ?? [];
 
 const cityInstances = onsiteCities.map((locName) => {
   const cityData = findCity(locName);
@@ -85,10 +75,8 @@ const course = {
       }
     : undefined,
   hasCourseInstance: [...cityInstances, ...remoteInstance],
-  courseMode: [
-    ...(onsiteCities.length > 0 ? ['Onsite'] : []),
-    ...(hasRemote ? ['Online'] : []),
-  ],
+  courseMode: [...(onsiteCities.length > 0 ? ['Onsite'] : []), ...(hasRemote ? ['Online'] : [])],
 };
 ---
+
 <script type="application/ld+json" set:html={JSON.stringify(course)} is:inline />

@@ -38,28 +38,31 @@ const services = await Promise.all(
   }),
 );
 ---
+
 <BaseLayout title={page.title} description={page.lead} lang={lang}>
   <PageHeader number="01 / Leistungen" heading={page.heading} lead={page.lead} />
 
   <ServiceMap lang={lang} />
 
   <Section>
-    {services.map(({ data, Content, number, detailHref, detailLabel }) => (
-      <ServiceCard
-        id={`service-${data.track}`}
-        number={number}
-        title={data.title}
-        bluf={data.bluf}
-        topics={data.topics}
-        track={data.track}
-        lang={lang}
-        detailHref={detailHref}
-        detailLabel={detailHref ? detailLabel : undefined}
-      >
-        <Content />
-      </ServiceCard>
-    ))}
-    <div class="border-t border-rule" />
+    {
+      services.map(({ data, Content, number, detailHref, detailLabel }) => (
+        <ServiceCard
+          id={`service-${data.track}`}
+          number={number}
+          title={data.title}
+          bluf={data.bluf}
+          topics={data.topics}
+          track={data.track}
+          lang={lang}
+          detailHref={detailHref}
+          detailLabel={detailHref ? detailLabel : undefined}
+        >
+          <Content />
+        </ServiceCard>
+      ))
+    }
+    <div class="border-t border-rule"></div>
   </Section>
 
   <LogoConveyor label="Tech-Stack" />

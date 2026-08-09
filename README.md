@@ -25,21 +25,21 @@ flowchart LR
 
 ## Stack
 
-| Layer | Choice |
-|---|---|
-| Framework | [Astro 6](https://astro.build) (static output) |
-| Styling | [Tailwind CSS 4](https://tailwindcss.com) via `@tailwindcss/vite` |
-| Icons | [Simple Icons](https://simpleicons.org) via `astro-icon` |
-| Fonts | Self-hosted Inter Variable ([Fontsource](https://fontsource.org)) |
-| Content typing | Astro Content Collections + Zod |
-| i18n | Astro built-in routing (DE default, EN at `/en/`) |
-| Image opt. | Astro `<Image>` + `sharp` |
-| Sitemap | `@astrojs/sitemap` with hreflang alternates |
-| Type checking | TypeScript 5 (strict) |
-| CI | GitHub Actions → [`deploy.yml`](.github/workflows/deploy.yml) |
-| Hosting | GitHub Pages |
-| Runtime (build) | Node 22.12+ (see [`.nvmrc`](.nvmrc)) |
-| Package manager | pnpm 9 |
+| Layer           | Choice                                                            |
+| --------------- | ----------------------------------------------------------------- |
+| Framework       | [Astro 6](https://astro.build) (static output)                    |
+| Styling         | [Tailwind CSS 4](https://tailwindcss.com) via `@tailwindcss/vite` |
+| Icons           | [Simple Icons](https://simpleicons.org) via `astro-icon`          |
+| Fonts           | Self-hosted Inter Variable ([Fontsource](https://fontsource.org)) |
+| Content typing  | Astro Content Collections + Zod                                   |
+| i18n            | Astro built-in routing (DE default, EN at `/en/`)                 |
+| Image opt.      | Astro `<Image>` + `sharp`                                         |
+| Sitemap         | `@astrojs/sitemap` with hreflang alternates                       |
+| Type checking   | TypeScript 5 (strict)                                             |
+| CI              | GitHub Actions → [`deploy.yml`](.github/workflows/deploy.yml)     |
+| Hosting         | GitHub Pages                                                      |
+| Runtime (build) | Node 22.12+ (see [`.nvmrc`](.nvmrc))                              |
+| Package manager | pnpm 9                                                            |
 
 ## Local development
 

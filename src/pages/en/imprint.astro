@@ -9,6 +9,7 @@ const lang = 'en' as const;
 const strings = t(lang);
 const page = strings.pages.impressum;
 ---
+
 <BaseLayout title={page.title} description="Imprint" lang={lang}>
   <PageHeader heading={page.heading} />
 
@@ -42,14 +43,16 @@ const page = strings.pages.impressum;
       <div class="col-span-12 md:col-span-3">
         <p class="text-sm tracking-wider uppercase text-muted">Liability for content</p>
       </div>
-      <div class="col-span-12 md:col-span-9 space-y-4 text-base text-ink/85 leading-relaxed max-w-3xl">
+      <div
+        class="col-span-12 md:col-span-9 space-y-4 text-base text-ink/85 leading-relaxed max-w-3xl"
+      >
         <p>
-          The content on this website is created with the greatest care. However, no guarantee can be given for
-          the accuracy, completeness, or timeliness of the content.
+          The content on this website is created with the greatest care. However, no guarantee can
+          be given for the accuracy, completeness, or timeliness of the content.
         </p>
         <p>
-          Links to external websites are outside our area of responsibility. We disclaim any liability for such
-          sites.
+          Links to external websites are outside our area of responsibility. We disclaim any
+          liability for such sites.
         </p>
       </div>
     </div>
@@ -62,10 +65,10 @@ const page = strings.pages.impressum;
       </div>
       <div class="col-span-12 md:col-span-9 text-base text-ink/85 leading-relaxed max-w-3xl">
         <p>
-          Texts and graphics on this website are subject to Swiss copyright law. Reproduction or use outside the
-          legal exemptions requires written consent from VOGLER CONSULTING. Third-party logos are trademarks of
-          their respective owners and are used under the Simple Icons license (CC0), without implying any
-          partnership or endorsement.
+          Texts and graphics on this website are subject to Swiss copyright law. Reproduction or use
+          outside the legal exemptions requires written consent from VOGLER CONSULTING. Third-party
+          logos are trademarks of their respective owners and are used under the Simple Icons
+          license (CC0), without implying any partnership or endorsement.
         </p>
       </div>
     </div>

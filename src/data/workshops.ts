@@ -18,9 +18,7 @@ export const WORKSHOP_TRACKS: readonly string[] = [
 // cleanly (`/workshops/agentic-ai`).
 export function workshopSlug(entry: CollectionEntry<'services'>): string {
   const lang = entry.data.lang;
-  return entry.id
-    .replace(new RegExp(`\\.?${lang}$`), '')
-    .replace(/-workshop$/, '');
+  return entry.id.replace(new RegExp(`\\.?${lang}$`), '').replace(/-workshop$/, '');
 }
 
 export function isWorkshop(entry: CollectionEntry<'services'>): boolean {

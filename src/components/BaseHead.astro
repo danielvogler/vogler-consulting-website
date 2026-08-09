@@ -8,8 +8,11 @@ interface Props {
   lang?: Locale;
 }
 
-const { title, description = 'AI, Autonomous Agents & Data Analytics. Cloud or On-Premises. VOGLER CONSULTING.', lang = 'de' } =
-  Astro.props;
+const {
+  title,
+  description = 'AI, Autonomous Agents & Data Analytics. Cloud or On-Premises. VOGLER CONSULTING.',
+  lang = 'de',
+} = Astro.props;
 
 const SITE = import.meta.env.SITE_URL ?? 'https://vogler-consulting.ch';
 const canonical = new URL(Astro.url.pathname, SITE).toString();
@@ -20,6 +23,7 @@ const enPath = lang === 'en' ? Astro.url.pathname : altPath;
 const deUrl = new URL(dePath, SITE).toString();
 const enUrl = new URL(enPath, SITE).toString();
 ---
+
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="generator" content={Astro.generator} />

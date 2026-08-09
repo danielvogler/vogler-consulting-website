@@ -11,30 +11,47 @@ const lang = 'en' as const;
 const strings = t(lang);
 const navLinks = getNavLinks(lang);
 
-
 const entries = [
-  { number: '01', title: strings.hero.entries.services, href: navLinks[0].href, description: 'AI roadmap, AI agents, data products, and workshops.' },
-  { number: '02', title: strings.hero.entries.about, href: navLinks[1].href, description: 'Approach and values.' },
-  { number: '03', title: strings.hero.entries.team, href: navLinks[2].href, description: 'Our network and partners.' },
+  {
+    number: '01',
+    title: strings.hero.entries.services,
+    href: navLinks[0].href,
+    description: 'AI roadmap, AI agents, data products, and workshops.',
+  },
+  {
+    number: '02',
+    title: strings.hero.entries.about,
+    href: navLinks[1].href,
+    description: 'Approach and values.',
+  },
+  {
+    number: '03',
+    title: strings.hero.entries.team,
+    href: navLinks[2].href,
+    description: 'Our network and partners.',
+  },
   // 04 Projects: re-enable when the projects page is moved back into src/pages/en/.
   // { number: '04', title: strings.hero.entries.projects, href: '/en/projects', description: 'Selected references.' },
 ];
 ---
+
 <BaseLayout title={strings.pages.home.title} lang={lang}>
   <Hero slogan={strings.hero.slogan} />
 
   <Section>
     <p class="text-sm tracking-wider uppercase text-accent mb-8">Navigation</p>
     <div>
-      {entries.map((entry) => (
-        <EntryTile
-          number={entry.number}
-          title={entry.title}
-          description={entry.description}
-          href={entry.href}
-        />
-      ))}
-      <div class="border-t border-rule" />
+      {
+        entries.map((entry) => (
+          <EntryTile
+            number={entry.number}
+            title={entry.title}
+            description={entry.description}
+            href={entry.href}
+          />
+        ))
+      }
+      <div class="border-t border-rule"></div>
     </div>
   </Section>
 

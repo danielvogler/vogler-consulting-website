@@ -23,7 +23,10 @@ const members = await Promise.all(
   }),
 );
 
-const partnerEntries = await getCollection('partners', (e) => e.data.lang === lang && e.data.kind === 'partner');
+const partnerEntries = await getCollection(
+  'partners',
+  (e) => e.data.lang === lang && e.data.kind === 'partner',
+);
 partnerEntries.sort((a, b) => a.data.order - b.data.order);
 
 const partners = await Promise.all(
@@ -33,30 +36,35 @@ const partners = await Promise.all(
   }),
 );
 ---
+
 <BaseLayout title={page.title} description={page.lead} lang={lang}>
   <PageHeader number="03 / Team" heading={page.heading} lead={page.lead} />
 
   <Section>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 md:gap-16">
-      {members.map(({ data, Content }) => (
-        <TeamMember name={data.name} role={data.role} photo={data.photo} linkedin={data.linkedin}>
-          <Content />
-        </TeamMember>
-      ))}
+      {
+        members.map(({ data, Content }) => (
+          <TeamMember name={data.name} role={data.role} photo={data.photo} linkedin={data.linkedin}>
+            <Content />
+          </TeamMember>
+        ))
+      }
     </div>
   </Section>
 
-  {partners.length > 0 && (
-    <Section bordered>
-      <h2 class="text-sm tracking-wider uppercase text-accent mb-8">{page.partnersHeading}</h2>
-      {partners.map(({ data, Content }) => (
-        <Partner name={data.name} url={data.url} kind={data.kind}>
-          <Content />
-        </Partner>
-      ))}
-      <div class="border-t border-rule" />
-    </Section>
-  )}
+  {
+    partners.length > 0 && (
+      <Section bordered>
+        <h2 class="text-sm tracking-wider uppercase text-accent mb-8">{page.partnersHeading}</h2>
+        {partners.map(({ data, Content }) => (
+          <Partner name={data.name} url={data.url} kind={data.kind}>
+            <Content />
+          </Partner>
+        ))}
+        <div class="border-t border-rule" />
+      </Section>
+    )
+  }
 
   <ContactCTA lang={lang} contactHref={`mailto:${CONTACT_EMAIL}`} />
 </BaseLayout>

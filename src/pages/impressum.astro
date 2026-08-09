@@ -9,6 +9,7 @@ const lang = 'de' as const;
 const strings = t(lang);
 const page = strings.pages.impressum;
 ---
+
 <BaseLayout title={page.title} description="Impressum" lang={lang}>
   <PageHeader heading={page.heading} />
 
@@ -42,14 +43,16 @@ const page = strings.pages.impressum;
       <div class="col-span-12 md:col-span-3">
         <p class="text-sm tracking-wider uppercase text-muted">Haftung für Inhalte</p>
       </div>
-      <div class="col-span-12 md:col-span-9 space-y-4 text-base text-ink/85 leading-relaxed max-w-3xl">
+      <div
+        class="col-span-12 md:col-span-9 space-y-4 text-base text-ink/85 leading-relaxed max-w-3xl"
+      >
         <p>
-          Die Inhalte dieser Website werden mit grösster Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit
-          und Aktualität der Inhalte kann jedoch keine Gewähr übernommen werden.
+          Die Inhalte dieser Website werden mit grösster Sorgfalt erstellt. Für die Richtigkeit,
+          Vollständigkeit und Aktualität der Inhalte kann jedoch keine Gewähr übernommen werden.
         </p>
         <p>
-          Verlinkungen auf externe Websites liegen ausserhalb unseres Verantwortungsbereichs. Es wird jegliche
-          Verantwortung für solche Websites abgelehnt.
+          Verlinkungen auf externe Websites liegen ausserhalb unseres Verantwortungsbereichs. Es
+          wird jegliche Verantwortung für solche Websites abgelehnt.
         </p>
       </div>
     </div>
@@ -62,10 +65,11 @@ const page = strings.pages.impressum;
       </div>
       <div class="col-span-12 md:col-span-9 text-base text-ink/85 leading-relaxed max-w-3xl">
         <p>
-          Texte und Grafiken auf dieser Website unterliegen dem Schweizer Urheberrecht. Eine Vervielfältigung oder
-          Verwendung ausserhalb der gesetzlichen Schranken bedarf der schriftlichen Zustimmung von VOGLER
-          CONSULTING. Logos Dritter sind Marken der jeweiligen Inhaber und werden unter der Simple-Icons-Lizenz
-          (CC0) verwendet, ohne eine Partnerschaft oder ein Endorsement zu implizieren.
+          Texte und Grafiken auf dieser Website unterliegen dem Schweizer Urheberrecht. Eine
+          Vervielfältigung oder Verwendung ausserhalb der gesetzlichen Schranken bedarf der
+          schriftlichen Zustimmung von VOGLER CONSULTING. Logos Dritter sind Marken der jeweiligen
+          Inhaber und werden unter der Simple-Icons-Lizenz (CC0) verwendet, ohne eine Partnerschaft
+          oder ein Endorsement zu implizieren.
         </p>
       </div>
     </div>

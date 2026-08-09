@@ -10,7 +10,11 @@ const strings = t(lang);
 const otherLocale: Locale = lang === 'de' ? 'en' : 'de';
 const otherHref = otherLocalePath(Astro.url.pathname, lang);
 ---
-<div class="flex items-center gap-1 text-xs font-medium" aria-label={strings.languageSwitcher.label}>
+
+<div
+  class="flex items-center gap-1 text-xs font-medium"
+  aria-label={strings.languageSwitcher.label}
+>
   <span class="text-ink" aria-current="true">
     {strings.languageSwitcher[lang]}
   </span>

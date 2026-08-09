@@ -111,4 +111,5 @@ if (type === 'service' && serviceSchema) graph.push(serviceSchema);
 
 const payload = { '@context': 'https://schema.org', '@graph': graph };
 ---
+
 <script type="application/ld+json" set:html={JSON.stringify(payload)} is:inline />
