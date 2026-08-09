@@ -44,3 +44,58 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  # A green deploy only means the artifact was published. It does not mean the
+  # live site is serving it, so check the real domain before calling it done.
+  smoke:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the live site
+        env:
+          BASE: https://vogler-consulting.ch
+        run: |
+          set -uo pipefail
+          fail=0
+
+          # Pages needs a moment to start serving the new artifact.
+          for attempt in 1 2 3 4 5 6; do
+            code=$(curl -sS -o /dev/null -w '%{http_code}' "$BASE/" || echo 000)
+            [ "$code" = "200" ] && break
+            echo "waiting for the deployment, homepage returned $code (attempt $attempt)"
+            sleep 15
+          done
+
+          status() {
+            code=$(curl -sSL -o /dev/null -w '%{http_code}' "$BASE$1" || echo 000)
+            if [ "$code" = "200" ]; then echo "ok    $1"
+            else echo "FAIL  $1 returned $code"; fail=1; fi
+          }
+          contains() {
+            if curl -sSL "$BASE$1" | grep -qF -- "$2"; then echo "ok    $1 contains \"$2\""
+            else echo "FAIL  $1 is missing \"$2\""; fail=1; fi
+          }
+          absent() {
+            if curl -sSL "$BASE$1" | grep -qF -- "$2"; then echo "FAIL  $1 still contains \"$2\""; fail=1
+            else echo "ok    $1 free of \"$2\""; fi
+          }
+
+          for path in / /en /about /en/about /team /en/team /careers /en/careers \
+                      /services /en/services /services/ai-roadmap /en/services/ai-roadmap \
+                      /workshops/agentic-ai /impressum /datenschutz \
+                      /sitemap-index.xml /robots.txt /llms.txt; do
+            status "$path"
+          done
+
+          # Content assertions, not just reachability.
+          contains / "info@vogler-consulting.ch"
+          absent   / "daniel@vogler-consulting.ch"
+          contains /services/ai-roadmap "AI Roadmap"
+          contains /careers "Karriere"
+          contains /en/careers "Careers"
+
+          if [ "$fail" -ne 0 ]; then
+            echo "::error::The deployment published but the live site failed its checks."
+            exit 1
+          fi
+          echo "live site verified"
