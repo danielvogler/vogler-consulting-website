@@ -194,19 +194,20 @@ credentials, client and partner source documents, and off-site brand assets.
 
 ## Definition of done
 
-Before calling a piece of work finished, in this order:
+Run the automated gate:
 
 ```bash
-pnpm build                    # astro check plus build, must pass
-npx prettier --check .        # must be clean
-git status --short            # nothing unexpected
-git diff --cached --name-only | grep -E '^(tmp|brand|workshops)/|\.env'   # must be empty
-grep -rn "—" src/ public/     # no em-dashes
-grep -rniE "gmail\.com|github_pat_|xox[baprs]-|BEGIN [A-Z ]*PRIVATE KEY" src/ public/ *.md
-grep -rniFf .leakwords src/ public/ *.md 2>/dev/null   # no client or partner names
+pnpm verify                  # build, formatting, leak scans, locale parity
+pnpm verify --skip-build     # same minus the build, for fast iteration
 ```
 
-Then confirm by hand:
+`scripts/verify.mjs` checks the build and type-check, prettier cleanliness,
+em-dashes, generic credential patterns, terms from `.leakwords`, confidential
+paths that are tracked or staged, and German/English parity including duplicate
+`order` values. It runs in CI on every pull request (`.github/workflows/verify.yml`)
+and again on the deploy path, so a red run blocks the merge.
+
+Then confirm by hand, since these are not mechanisable:
 
 - New or renamed routes appear in `public/llms.txt` and are reachable through the
   navigation, not only through the sitemap.

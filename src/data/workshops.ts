@@ -12,7 +12,7 @@ export const WORKSHOP_TRACKS: readonly string[] = [
 
 // Filenames follow the pattern `<slug>-workshop.<lang>.md`. Astro's glob loader
 // derives `entry.id` from the filename minus the extension, and in some
-// versions strips the dot before the language code — leaving e.g.
+// versions strips the dot before the language code, leaving e.g.
 // `agentic-ai-workshopen` instead of `agentic-ai-workshop.en`. Strip either
 // form defensively, then drop the trailing `-workshop`, so the URL slug reads
 // cleanly (`/workshops/agentic-ai`).
