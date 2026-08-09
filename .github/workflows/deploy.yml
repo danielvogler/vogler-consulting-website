@@ -80,39 +80,56 @@ jobs:
         env:
           BASE: https://vogler-consulting.ch
         run: |
+          # GitHub runs this with `bash -e`, which would abort at the first
+          # failed assertion and skip the summary. Collect failures instead.
+          set +e
           set -uo pipefail
+          page=$(mktemp)
           fail=0
 
-          status() {
-            code=$(curl -sSL -o /dev/null -w '%{http_code}' "$BASE$1" || echo 000)
-            if [ "$code" = "200" ]; then echo "ok    $1"
-            else echo "FAIL  $1 returned $code"; fail=1; fi
-          }
-          contains() {
-            if curl -sSL "$BASE$1" | grep -qF -- "$2"; then echo "ok    $1 contains \"$2\""
-            else echo "FAIL  $1 is missing \"$2\""; fail=1; fi
-          }
-          absent() {
-            if curl -sSL "$BASE$1" | grep -qF -- "$2"; then echo "FAIL  $1 still contains \"$2\""; fail=1
-            else echo "ok    $1 free of \"$2\""; fi
+          # Always fetch into a file. `curl | grep -q` lets grep close the pipe
+          # as soon as it matches, which can make curl exit non-zero under
+          # pipefail and report a passing check as a failure.
+          fetch() { curl -fsSL --max-time 20 -o "$page" "$BASE$1" 2>/dev/null; }
+          http_code() { curl -sSL --max-time 20 -o /dev/null -w '%{http_code}' "$BASE$1" 2>/dev/null || echo 000; }
+
+          reachable() { [ "$(http_code "$1")" = "200" ]; }
+          has_text() { fetch "$1" && grep -qF -- "$2" "$page"; }
+          lacks_text() { fetch "$1" && ! grep -qF -- "$2" "$page"; }
+
+          # Retry before believing a failure: the CDN can serve a mix of old
+          # and new edges for a short window after a deploy.
+          retry() {
+            description=$1
+            shift
+            for attempt in 1 2 3; do
+              "$@" && return 0
+              [ "$attempt" -lt 3 ] && sleep 10
+            done
+            echo "FAIL  $description"
+            fail=1
+            return 1
           }
 
           for path in / /en /about /en/about /team /en/team /careers /en/careers \
                       /services /en/services /services/ai-roadmap /en/services/ai-roadmap \
                       /workshops/agentic-ai /impressum /datenschutz \
                       /sitemap-index.xml /robots.txt /llms.txt; do
-            status "$path"
+            retry "$path is not reachable" reachable "$path" \
+              || echo "      last status was $(http_code "$path")"
           done
 
-          # Content assertions, not just reachability.
-          contains / "info@vogler-consulting.ch"
-          absent   / "daniel@vogler-consulting.ch"
-          contains /services/ai-roadmap "AI Roadmap"
-          contains /careers "Karriere"
-          contains /en/careers "Careers"
+          retry '/ does not show the contact address' has_text / info@vogler-consulting.ch
+          retry '/ still shows the old contact address' lacks_text / daniel@vogler-consulting.ch
+          retry '/services/ai-roadmap is missing its heading' has_text /services/ai-roadmap 'AI Roadmap'
+          retry '/careers is missing its heading' has_text /careers Karriere
+          retry '/en/careers is missing its heading' has_text /en/careers Careers
+
+          rm -f "$page"
 
           if [ "$fail" -ne 0 ]; then
-            echo "::error::The deployment published but the live site failed its checks."
+            live=$(curl -fsS --max-time 10 "$BASE/build-id.txt" 2>/dev/null | head -c 40 | tr -d '[:space:]')
+            echo "::error::Live site checks failed. Live build id ${live:-unavailable}, expected ${GITHUB_SHA}."
             exit 1
           fi
           echo "live site verified"
