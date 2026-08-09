@@ -192,6 +192,15 @@ credentials, client and partner source documents, and off-site brand assets.
 - **Names of clients and partners taken from source material never appear in the
   repository**: not in page copy, not in code comments, not in commit messages,
   not in branch names. Source documents inform structure and approach only.
+- **Never name the contents of a gitignored location.** Referring to an ignored
+  path is fine, since `.gitignore` lists it anyway. Naming the files inside one
+  is not: the filename of a local-only document reveals that the document
+  exists and what it is about. This applies to commit messages and `.gitignore`
+  comments as much as to code and copy. Add such filenames to `.leakwords` so
+  the hooks catch a slip.
+- Do not use `--no-verify`, and prefer explicit paths over `git add -A` when the
+  ignore rules have just changed. A `git add -A` run while a rule is missing
+  will happily stage the file that rule exists to protect.
 - Real partner logos and named references require written consent per partner.
   Anonymise until it is in hand.
 - No personal email addresses, credentials, tokens, internal URLs, or ticket
