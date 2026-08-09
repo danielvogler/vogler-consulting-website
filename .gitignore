@@ -38,3 +38,6 @@ brand/
 
 # workshop source material (PDFs, decks) — local-only, root-level only
 /workshops/
+
+# scratch space for source material and drafts — never committed
+/tmp/

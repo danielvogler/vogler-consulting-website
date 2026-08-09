@@ -5,12 +5,12 @@ import EntryTile from '~/components/EntryTile.astro';
 import Section from '~/components/Section.astro';
 import ContactCTA from '~/components/ContactCTA.astro';
 import { getNavLinks, t } from '~/i18n';
+import { CONTACT_EMAIL } from '~/data/contact';
 
 const lang = 'en' as const;
 const strings = t(lang);
 const navLinks = getNavLinks(lang);
 
-const CONTACT_EMAIL = import.meta.env.CONTACT_EMAIL || 'daniel@vogler-consulting.ch';
 
 const entries = [
   { number: '01', title: strings.hero.entries.services, href: navLinks[0].href, description: 'End-to-end delivery and workshops.' },

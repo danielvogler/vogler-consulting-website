@@ -6,6 +6,7 @@ import Partner from '~/components/Partner.astro';
 import Section from '~/components/Section.astro';
 import ContactCTA from '~/components/ContactCTA.astro';
 import { t } from '~/i18n';
+import { CONTACT_EMAIL } from '~/data/contact';
 
 const lang = 'de' as const;
 const strings = t(lang);
@@ -20,8 +21,6 @@ const projects = await Promise.all(
     return { data: entry.data, Content };
   }),
 );
-
-const CONTACT_EMAIL = import.meta.env.CONTACT_EMAIL || 'daniel@vogler-consulting.ch';
 ---
 <BaseLayout title={page.title} description={page.lead} lang={lang}>
   <PageHeader number="04 / Projekte" heading={page.heading} lead={page.lead} />

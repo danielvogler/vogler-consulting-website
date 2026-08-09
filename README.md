@@ -60,7 +60,7 @@ pnpm format        # prettier --write .
 
 ## Environment
 
-Copy [`.env.example`](.env.example) to `.env.local` for local overrides. Production values are injected by GitHub Actions; the only required runtime variable is `SITE_URL` (set in the workflow). `CONTACT_EMAIL` falls back to `daniel@vogler-consulting.ch` if not set.
+Copy [`.env.example`](.env.example) to `.env.local` for local overrides. Production values are injected by GitHub Actions; the only required runtime variable is `SITE_URL` (set in the workflow). `CONTACT_EMAIL` falls back to `info@vogler-consulting.ch` if not set (see [`src/data/contact.ts`](src/data/contact.ts), the single place the address is defined).
 
 ## Project layout
 

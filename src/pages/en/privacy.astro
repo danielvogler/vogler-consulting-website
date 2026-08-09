@@ -3,12 +3,11 @@ import BaseLayout from '~/layouts/BaseLayout.astro';
 import PageHeader from '~/components/PageHeader.astro';
 import Section from '~/components/Section.astro';
 import { t } from '~/i18n';
+import { CONTACT_EMAIL } from '~/data/contact';
 
 const lang = 'en' as const;
 const strings = t(lang);
 const page = strings.pages.datenschutz;
-
-const CONTACT_EMAIL = import.meta.env.CONTACT_EMAIL || 'daniel@vogler-consulting.ch';
 ---
 <BaseLayout title={page.title} description="Privacy policy" lang={lang}>
   <PageHeader heading={page.heading} />
