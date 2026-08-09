@@ -56,7 +56,11 @@ pnpm check         # astro check + tsc strict
 pnpm build         # produces ./dist
 pnpm preview       # serves ./dist locally on :4321
 pnpm format        # prettier --write .
+pnpm verify        # build, formatting, secret and leak scans, DE/EN parity
 ```
+
+Contributor and agent guidance, including the repository rules and the
+definition of done, lives in [`AGENTS.md`](AGENTS.md).
 
 ## Environment
 
@@ -71,11 +75,12 @@ src/
   layouts/            BaseLayout
   components/         Hero, Header, Footer, ServiceCard, LogoConveyor, ...
   content/            Markdown for services / team / partners (typed via content.config.ts)
-  data/               carousel logo list
+  data/               contact address, service groups, careers profiles, logo list
   i18n/               typed string tables (de.ts, en.ts)
   styles/global.css   Tailwind v4 @theme tokens + accent palette
-scripts/              build-time helpers (OG image generation via sharp)
-.github/workflows/    CI definition
+scripts/              build-time helpers (OG image generation, verify gate)
+.githooks/            pre-commit and commit-msg guards (git config core.hooksPath .githooks)
+.github/workflows/    CI definitions (deploy, verify)
 ```
 
 ## Deployment

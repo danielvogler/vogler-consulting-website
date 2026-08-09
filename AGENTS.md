@@ -54,10 +54,12 @@ actually matters.
 | `pnpm preview` | Serves the built `dist/` locally                              |
 | `pnpm check`   | Type check only                                               |
 | `pnpm format`  | `prettier --write .`                                          |
+| `pnpm verify`  | The full gate, see Definition of done                         |
 
-`pnpm build` is the real gate: it runs `astro check`, so it catches type errors
-and content-schema violations that `pnpm dev` will happily ignore. Run it before
-committing.
+`pnpm verify` is the gate. It runs the build, which in turn runs `astro check`,
+so it catches type errors and content-schema violations that `pnpm dev` will
+happily ignore, and adds the leak and parity checks on top. Run it before
+committing. `pnpm verify --skip-build` is the fast variant while iterating.
 
 Editing `src/content.config.ts` requires a dev-server restart. Markdown content
 hot-reloads.
@@ -70,6 +72,7 @@ src/
   pages/                routes. DE at /, EN mirrored under /en/
     services/[slug]     consulting engagement detail pages
     workshops/[slug]    workshop detail pages
+    about, team, careers  grouped under one nav dropdown, see getAboutLinks
   _drafts/              hidden pages. Astro ignores underscore-prefixed dirs
   layouts/BaseLayout.astro
   components/           Hero, Header, Footer, ServiceCard, ServiceDetail,
@@ -77,11 +80,13 @@ src/
   content/              Markdown collections: services, team, partners
   content.config.ts     Zod schemas for those collections
   data/                 contact.ts, service-groups.ts, service-details.ts,
-                        workshops.ts, logos.ts, cities.ts
+                        workshops.ts, careers.ts, logos.ts, cities.ts
   i18n/{de,en,index}.ts typed string tables
   styles/global.css     Tailwind v4 @theme tokens
 scripts/generate-og.mjs prebuild step, renders og.svg to og.png via sharp
-.github/workflows/      deploy.yml
+scripts/verify.mjs      the repository gate, see Definition of done
+.githooks/              pre-commit and commit-msg guards
+.github/workflows/      deploy.yml, verify.yml
 ```
 
 ## Content model
