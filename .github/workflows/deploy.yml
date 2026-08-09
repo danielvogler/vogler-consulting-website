@@ -31,6 +31,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       # `pnpm verify` runs the build, so dist/ is produced here as well.
       - run: pnpm verify
+      # Lets the smoke job tell this deployment apart from the previous one.
+      - run: echo "${{ github.sha }}" > dist/build-id.txt
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
@@ -51,20 +53,35 @@ jobs:
     needs: deploy
     runs-on: ubuntu-latest
     steps:
+      # A 200 from the homepage is not evidence of anything: the CDN happily
+      # serves the previous build with a 200 while the new one propagates.
+      # Wait for the site to report this run's commit instead.
+      - name: Wait for this build to go live
+        env:
+          BASE: https://vogler-consulting.ch
+          EXPECTED: ${{ github.sha }}
+        run: |
+          set -uo pipefail
+          for attempt in $(seq 1 20); do
+            # -f so a 404 yields nothing instead of the error page, and a hard
+            # length cap so a misconfigured route can never dump HTML into the log.
+            live=$(curl -fsS --max-time 10 "$BASE/build-id.txt" 2>/dev/null | head -c 40 | tr -d '[:space:]')
+            if [ "$live" = "$EXPECTED" ]; then
+              echo "live build is $EXPECTED after $attempt attempt(s)"
+              exit 0
+            fi
+            echo "attempt $attempt: live build is \"${live:-unavailable}\", waiting"
+            sleep 15
+          done
+          echo "::error::The new build did not reach the live site within five minutes."
+          exit 1
+
       - name: Check the live site
         env:
           BASE: https://vogler-consulting.ch
         run: |
           set -uo pipefail
           fail=0
-
-          # Pages needs a moment to start serving the new artifact.
-          for attempt in 1 2 3 4 5 6; do
-            code=$(curl -sS -o /dev/null -w '%{http_code}' "$BASE/" || echo 000)
-            [ "$code" = "200" ] && break
-            echo "waiting for the deployment, homepage returned $code (attempt $attempt)"
-            sleep 15
-          done
 
           status() {
             code=$(curl -sSL -o /dev/null -w '%{http_code}' "$BASE$1" || echo 000)
