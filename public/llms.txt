@@ -26,6 +26,7 @@
 
 - [Company](https://vogler-consulting.ch/en/about): Mission, approach, values.
 - [Team](https://vogler-consulting.ch/en/team): Consultant network and partners.
+- [Careers](https://vogler-consulting.ch/en/careers): The engineering and data profiles behind the services, and how to reach us speculatively.
 
 ## Languages
 

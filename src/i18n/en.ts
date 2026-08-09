@@ -5,6 +5,7 @@ export const en: Strings = {
     services: 'Services',
     about: 'About',
     team: 'Team',
+    careers: 'Careers',
     projects: 'Projects',
     contact: 'Contact',
   },
@@ -21,6 +22,7 @@ export const en: Strings = {
       services: 'Services',
       about: 'About',
       team: 'Team',
+      careers: 'Careers',
       projects: 'Projects',
     },
   },
@@ -41,6 +43,11 @@ export const en: Strings = {
       heading: 'Team',
       lead: 'Our network and partners.',
       partnersHeading: 'Partners',
+    },
+    careers: {
+      title: 'Careers, VOGLER CONSULTING',
+      heading: 'Careers',
+      lead: 'The specialist profiles our services are built on. Speculative applications are welcome.',
     },
     projects: {
       title: 'Projects, VOGLER CONSULTING',

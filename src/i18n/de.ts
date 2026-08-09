@@ -3,6 +3,7 @@ export interface Strings {
     services: string;
     about: string;
     team: string;
+    careers: string;
     projects: string;
     contact: string;
   };
@@ -19,6 +20,7 @@ export interface Strings {
       services: string;
       about: string;
       team: string;
+      careers: string;
       projects: string;
     };
   };
@@ -27,6 +29,7 @@ export interface Strings {
     services: { title: string; heading: string; lead: string };
     about: { title: string; heading: string; lead: string };
     team: { title: string; heading: string; lead: string; partnersHeading: string };
+    careers: { title: string; heading: string; lead: string };
     projects: { title: string; heading: string; lead: string };
     impressum: { title: string; heading: string };
     datenschutz: { title: string; heading: string };
@@ -46,6 +49,7 @@ export const de: Strings = {
     services: 'Leistungen',
     about: 'Über uns',
     team: 'Team',
+    careers: 'Karriere',
     projects: 'Projekte',
     contact: 'Kontakt',
   },
@@ -62,6 +66,7 @@ export const de: Strings = {
       services: 'Leistungen',
       about: 'Über uns',
       team: 'Team',
+      careers: 'Karriere',
       projects: 'Projekte',
     },
   },
@@ -82,6 +87,11 @@ export const de: Strings = {
       heading: 'Team',
       lead: 'Unser Netzwerk und unsere Partner.',
       partnersHeading: 'Partner',
+    },
+    careers: {
+      title: 'Karriere, VOGLER CONSULTING',
+      heading: 'Karriere',
+      lead: 'Die Fachprofile, auf denen unsere Leistungen aufbauen. Initiativbewerbungen sind willkommen.',
     },
     projects: {
       title: 'Projekte, VOGLER CONSULTING',

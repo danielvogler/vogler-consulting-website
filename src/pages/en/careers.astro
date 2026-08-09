@@ -1,0 +1,109 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import PageHeader from '~/components/PageHeader.astro';
+import Section from '~/components/Section.astro';
+import ContactCTA from '~/components/ContactCTA.astro';
+import { t } from '~/i18n';
+import { CONTACT_EMAIL } from '~/data/contact';
+import { PROFILES_EN, EXPECTATIONS_EN } from '~/data/careers';
+
+const lang = 'en' as const;
+const strings = t(lang);
+const page = strings.pages.careers;
+
+const applyHref = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('Speculative application')}`;
+---
+
+<BaseLayout title={page.title} description={page.lead} lang={lang}>
+  <PageHeader number="02 / Careers" heading={page.heading} lead={page.lead} />
+
+  <Section>
+    <div class="grid grid-cols-12 gap-6 md:gap-10">
+      <div class="col-span-12 md:col-span-3">
+        <p class="text-sm tracking-wider uppercase text-accent">Who we look for</p>
+      </div>
+      <div
+        class="col-span-12 md:col-span-9 space-y-6 text-lg text-ink/85 leading-relaxed max-w-3xl"
+      >
+        <p>
+          We work with a small circle of employed and freelance specialists, and we widen it
+          whenever we meet the right people. Projects arrive at short notice, which is why getting
+          in touch is worth it even without an advertised role.
+        </p>
+        <p>
+          This page sets out the profiles our services are built on. If you recognise yourself in
+          one, write to us.
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <Section bordered>
+    <div class="grid grid-cols-12 gap-6 md:gap-10">
+      <div class="col-span-12 md:col-span-3">
+        <p class="text-sm tracking-wider uppercase text-accent">Profiles</p>
+      </div>
+      <div class="col-span-12 md:col-span-9 space-y-10 max-w-3xl">
+        {
+          PROFILES_EN.map((profile) => (
+            <div class="border-t border-rule/60 pt-6 first:border-t-0 first:pt-0">
+              <h2 class="text-2xl tracking-tight font-medium">{profile.title}</h2>
+              <p class="mt-2 text-base text-muted leading-relaxed">{profile.summary}</p>
+              <ul class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm text-ink/80">
+                {profile.skills.map((skill) => (
+                  <li class="flex items-baseline gap-2">
+                    <span class="text-accent">·</span>
+                    <span>{skill}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </Section>
+
+  <Section bordered>
+    <div class="grid grid-cols-12 gap-6 md:gap-10">
+      <div class="col-span-12 md:col-span-3">
+        <p class="text-sm tracking-wider uppercase text-accent">What counts</p>
+      </div>
+      <div class="col-span-12 md:col-span-9 grid sm:grid-cols-2 gap-x-10 gap-y-8 max-w-3xl">
+        {
+          EXPECTATIONS_EN.map((item) => (
+            <div>
+              <h3 class="text-xl tracking-tight font-medium">{item.title}</h3>
+              <p class="mt-2 text-sm text-muted leading-relaxed">{item.description}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </Section>
+
+  <Section bordered>
+    <div class="grid grid-cols-12 gap-6 md:gap-10">
+      <div class="col-span-12 md:col-span-3">
+        <p class="text-sm tracking-wider uppercase text-accent">Get in touch</p>
+      </div>
+      <div class="col-span-12 md:col-span-9 space-y-6 max-w-3xl">
+        <p class="text-lg text-ink/85 leading-relaxed">
+          Tell us briefly what you last worked on and what you are looking for. A link to code, a
+          project, or something you have written says more than a formal CV. We reply even when
+          nothing is open.
+        </p>
+        <p>
+          <a
+            href={applyHref}
+            class="inline-flex items-center text-base tracking-tight border-b border-ink hover:border-accent hover:text-accent transition-colors pb-0.5"
+          >
+            Send a speculative application →
+          </a>
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <ContactCTA lang={lang} contactHref={`mailto:${CONTACT_EMAIL}`} />
+</BaseLayout>

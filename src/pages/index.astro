@@ -4,12 +4,13 @@ import Hero from '~/components/Hero.astro';
 import EntryTile from '~/components/EntryTile.astro';
 import Section from '~/components/Section.astro';
 import ContactCTA from '~/components/ContactCTA.astro';
-import { getNavLinks, t } from '~/i18n';
+import { getAboutLinks, getNavLinks, t } from '~/i18n';
 import { CONTACT_EMAIL } from '~/data/contact';
 
 const lang = 'de' as const;
 const strings = t(lang);
 const navLinks = getNavLinks(lang);
+const [aboutLink, teamLink, careersLink] = getAboutLinks(lang);
 
 const entries = [
   {
@@ -21,17 +22,23 @@ const entries = [
   {
     number: '02',
     title: strings.hero.entries.about,
-    href: navLinks[1].href,
+    href: aboutLink.href,
     description: 'Ansatz und Werte.',
   },
   {
     number: '03',
     title: strings.hero.entries.team,
-    href: navLinks[2].href,
+    href: teamLink.href,
     description: 'Unser Netzwerk und unsere Partner.',
   },
-  // 04 Projekte: re-enable when the projects page is moved back into src/pages/.
-  // { number: '04', title: strings.hero.entries.projects, href: '/projects', description: 'Referenzen aus unserer Arbeit.' },
+  {
+    number: '04',
+    title: strings.hero.entries.careers,
+    href: careersLink.href,
+    description: 'Profile, die unsere Leistungen tragen.',
+  },
+  // 05 Projekte: re-enable when the projects page is moved back into src/pages/.
+  // { number: '05', title: strings.hero.entries.projects, href: '/projects', description: 'Referenzen aus unserer Arbeit.' },
 ];
 ---
 

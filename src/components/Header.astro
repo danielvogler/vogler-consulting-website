@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import { isWorkshop, workshopHref } from '~/data/workshops';
 import { hasServiceDetail, serviceDetailHref } from '~/data/service-details';
+import { getAboutLinks } from '~/i18n';
 
 interface NavLink {
   href: string;
@@ -32,12 +33,35 @@ const workshops = allServices.filter(isWorkshop).map((entry) => ({
   href: workshopHref(entry),
 }));
 
-const dropdownGroups = [
-  { label: lang === 'de' ? 'Beratung' : 'Consulting', items: consulting },
-  { label: 'Workshops', items: workshops },
-].filter((group) => group.items.length > 0);
-
 const viewAllLabel = lang === 'de' ? 'Alle Leistungen' : 'All services';
+const aboutHref = lang === 'de' ? '/about' : '/en/about';
+
+// Nav entries that open a dropdown, keyed by their href. A group without a
+// label renders as a plain list; `viewAll` adds a trailing link to the parent.
+const dropdowns = new Map([
+  [
+    servicesHref,
+    {
+      groups: [
+        { label: lang === 'de' ? 'Beratung' : 'Consulting', items: consulting },
+        { label: 'Workshops', items: workshops },
+      ].filter((group) => group.items.length > 0),
+      viewAll: { href: servicesHref, label: viewAllLabel },
+    },
+  ],
+  [
+    aboutHref,
+    {
+      groups: [
+        {
+          label: undefined,
+          items: getAboutLinks(lang).map((l) => ({ title: l.label, href: l.href })),
+        },
+      ],
+      viewAll: undefined,
+    },
+  ],
+]);
 ---
 
 <header
@@ -58,8 +82,8 @@ const viewAllLabel = lang === 'de' ? 'Alle Leistungen' : 'All services';
     <nav class="hidden md:flex items-center gap-8" aria-label="Primary">
       {
         navLinks.map((link) => {
-          const hasDropdown = link.href === servicesHref && dropdownGroups.length > 0;
-          if (!hasDropdown) {
+          const dropdown = dropdowns.get(link.href);
+          if (!dropdown || dropdown.groups.length === 0) {
             return (
               <a href={link.href} class="text-sm text-ink/80 hover:text-ink link-underline">
                 {link.label}
@@ -94,11 +118,13 @@ const viewAllLabel = lang === 'de' ? 'Alle Leistungen' : 'All services';
                   class="w-80 max-h-[70vh] overflow-y-auto bg-paper border border-rule py-2 shadow-sm"
                   role="menu"
                 >
-                  {dropdownGroups.map((group, groupIndex) => (
+                  {dropdown.groups.map((group, groupIndex) => (
                     <div class={groupIndex > 0 ? 'border-t border-rule/60 mt-1 pt-1' : ''}>
-                      <p class="px-4 py-2 text-xs tracking-wider uppercase text-accent">
-                        {group.label}
-                      </p>
+                      {group.label && (
+                        <p class="px-4 py-2 text-xs tracking-wider uppercase text-accent">
+                          {group.label}
+                        </p>
+                      )}
                       {group.items.map((item) => (
                         <a
                           href={item.href}
@@ -110,15 +136,17 @@ const viewAllLabel = lang === 'de' ? 'Alle Leistungen' : 'All services';
                       ))}
                     </div>
                   ))}
-                  <div class="border-t border-rule/60 mt-1 pt-1">
-                    <a
-                      href={link.href}
-                      class="block px-4 py-2 text-sm text-accent hover:bg-ink/[0.04] transition-colors"
-                      role="menuitem"
-                    >
-                      {viewAllLabel} →
-                    </a>
-                  </div>
+                  {dropdown.viewAll && (
+                    <div class="border-t border-rule/60 mt-1 pt-1">
+                      <a
+                        href={dropdown.viewAll.href}
+                        class="block px-4 py-2 text-sm text-accent hover:bg-ink/[0.04] transition-colors"
+                        role="menuitem"
+                      >
+                        {dropdown.viewAll.label} →
+                      </a>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
