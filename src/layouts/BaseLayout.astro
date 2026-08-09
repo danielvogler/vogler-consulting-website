@@ -5,6 +5,7 @@ import Header from '~/components/Header.astro';
 import Footer from '~/components/Footer.astro';
 import LanguageSwitcher from '~/components/LanguageSwitcher.astro';
 import { getLegalLinks, getNavLinks, t, type Locale } from '~/i18n';
+import { CONTACT_EMAIL } from '~/data/contact';
 
 interface Props {
   title: string;
@@ -14,13 +15,12 @@ interface Props {
 
 const { title, description, lang = 'de' } = Astro.props;
 
-const CONTACT_EMAIL = import.meta.env.CONTACT_EMAIL || 'daniel@vogler-consulting.ch';
-
 const strings = t(lang);
 const navLinks = getNavLinks(lang);
 const legalLinks = getLegalLinks(lang);
 const contactHref = `mailto:${CONTACT_EMAIL}`;
 ---
+
 <!doctype html>
 <html lang={lang === 'de' ? 'de-CH' : 'en'}>
   <head>

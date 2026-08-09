@@ -8,6 +8,7 @@ const lang = 'de' as const;
 const strings = t(lang);
 const navLinks = getNavLinks(lang);
 ---
+
 <BaseLayout title="404, VOGLER CONSULTING" description="Seite nicht gefunden" lang={lang}>
   <PageHeader heading="404" lead="Diese Seite existiert nicht." />
 
@@ -21,13 +22,18 @@ const navLinks = getNavLinks(lang);
           Die gesuchte Seite wurde nicht gefunden. Versuchen Sie eine dieser Seiten:
         </p>
         <ul class="space-y-3 text-base">
-          {navLinks.map((link) => (
-            <li>
-              <a href={link.href} class="link-underline text-ink hover:text-accent transition-colors">
-                {link.label}
-              </a>
-            </li>
-          ))}
+          {
+            navLinks.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  class="link-underline text-ink hover:text-accent transition-colors"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
         </ul>
       </div>
     </div>

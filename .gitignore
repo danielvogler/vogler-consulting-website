@@ -28,13 +28,14 @@ pnpm-debug.log*
 # opencode session state
 .sisyphus/
 
-# confidential / local-only docs
-INSTRUCTIONS.md
-HANDOFF.md
-TODOS.md
-
-# off-site brand assets (LinkedIn, Workspace, signatures) — local-only
+# off-site brand assets (LinkedIn, Workspace, signatures), local-only
 brand/
 
-# workshop source material (PDFs, decks) — local-only, root-level only
+# workshop source material (PDFs, decks), local-only, root-level only
 /workshops/
+
+# scratch space, local-only: source material, drafts and working notes
+/tmp/
+
+# local-only leak-scan wordlist (the terms themselves are confidential)
+.leakwords

@@ -14,6 +14,7 @@ const services = defineCollection({
       'rag',
       'delivery',
       'discovery',
+      'ai-roadmap',
       'agentic-ai',
       'data',
       'code',
@@ -41,6 +42,29 @@ const services = defineCollection({
         }),
       )
       .optional(),
+    // Consulting-engagement detail fields (used on /services/[slug] pages).
+    // A service renders a detail page as soon as it defines `approach`.
+    situation: z.string().optional(),
+    approach: z
+      .array(
+        z.object({
+          title: z.string(),
+          description: z.string(),
+          deliverable: z.string().optional(),
+        }),
+      )
+      .optional(),
+    workstreams: z
+      .array(
+        z.object({
+          title: z.string(),
+          description: z.string(),
+        }),
+      )
+      .optional(),
+    outcomes: z.array(z.string()).optional(),
+    involvement: z.array(z.string()).optional(),
+    entryPoint: z.string().optional(),
   }),
 });
 

@@ -16,10 +16,15 @@ const currentYear = new Date().getFullYear();
 const yearRange = currentYear > FOUNDED ? `${FOUNDED}–${currentYear}` : `${FOUNDED}`;
 const rights = lang === 'de' ? 'Alle Rechte vorbehalten.' : 'All rights reserved.';
 ---
+
 <footer class="border-t border-rule mt-32">
-  <div class="mx-auto max-w-(--container-content) px-6 md:px-10 py-12 grid gap-10 md:grid-cols-3 text-sm text-muted">
+  <div
+    class="mx-auto max-w-(--container-content) px-6 md:px-10 py-12 grid gap-10 md:grid-cols-3 text-sm text-muted"
+  >
     <div class="space-y-2">
-      <p class="font-medium text-ink tracking-tight">VOGLER CONSULTING<span class="text-accent">.</span></p>
+      <p class="font-medium text-ink tracking-tight">
+        VOGLER CONSULTING<span class="text-accent">.</span>
+      </p>
       <p>Staeblistr. 1</p>
       <p>8006 Zürich, Schweiz</p>
       <p>UID: CHE-191.414.241</p>
@@ -28,15 +33,28 @@ const rights = lang === 'de' ? 'Alle Rechte vorbehalten.' : 'All rights reserved
     <div class="space-y-2">
       <p class="font-medium text-ink tracking-tight">{lang === 'de' ? 'Kontakt' : 'Contact'}</p>
       <p><a href={`mailto:${contactEmail}`} class="link-underline">{contactEmail}</a></p>
-      <p><a href="https://www.linkedin.com/company/voglerconsulting" rel="noopener noreferrer" target="_blank" class="link-underline">LinkedIn</a></p>
+      <p>
+        <a
+          href="https://www.linkedin.com/company/voglerconsulting"
+          rel="noopener noreferrer"
+          target="_blank"
+          class="link-underline">LinkedIn</a
+        >
+      </p>
     </div>
 
     <div class="space-y-2">
       <p class="font-medium text-ink tracking-tight">{lang === 'de' ? 'Rechtliches' : 'Legal'}</p>
       <ul class="space-y-1">
-        {legalLinks.map((l) => (
-          <li><a href={l.href} class="link-underline">{l.label}</a></li>
-        ))}
+        {
+          legalLinks.map((l) => (
+            <li>
+              <a href={l.href} class="link-underline">
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
       </ul>
     </div>
   </div>

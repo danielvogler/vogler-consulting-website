@@ -1,6 +1,7 @@
 ---
 import type { Locale } from '~/i18n';
 import { SWISS_CITIES } from '~/data/cities';
+import { CONTACT_EMAIL } from '~/data/contact';
 
 interface ServiceProps {
   name: string;
@@ -17,7 +18,6 @@ interface Props {
 const { lang, type = 'org', service } = Astro.props;
 
 const SITE = import.meta.env.SITE_URL ?? 'https://vogler-consulting.ch';
-const CONTACT_EMAIL = import.meta.env.CONTACT_EMAIL || 'daniel@vogler-consulting.ch';
 
 const cityServices = SWISS_CITIES.map((c) => ({
   '@type': 'City',
@@ -111,4 +111,5 @@ if (type === 'service' && serviceSchema) graph.push(serviceSchema);
 
 const payload = { '@context': 'https://schema.org', '@graph': graph };
 ---
+
 <script type="application/ld+json" set:html={JSON.stringify(payload)} is:inline />

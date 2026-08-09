@@ -9,8 +9,8 @@ export interface ServiceGroup {
 export const SERVICE_GROUPS: readonly ServiceGroup[] = [
   {
     key: 'discovery',
-    labels: { de: 'Discovery', en: 'Discovery' },
-    tracks: ['discovery'],
+    labels: { de: 'Discovery & Strategie', en: 'Discovery & Strategy' },
+    tracks: ['discovery', 'ai-roadmap'],
   },
   {
     key: 'agentic',

@@ -4,13 +4,13 @@ import PageHeader from '~/components/PageHeader.astro';
 import Section from '~/components/Section.astro';
 import ContactCTA from '~/components/ContactCTA.astro';
 import { t } from '~/i18n';
+import { CONTACT_EMAIL } from '~/data/contact';
 
 const lang = 'en' as const;
 const strings = t(lang);
 const page = strings.pages.about;
-
-const CONTACT_EMAIL = import.meta.env.CONTACT_EMAIL || 'daniel@vogler-consulting.ch';
 ---
+
 <BaseLayout title={page.title} description={page.lead} lang={lang}>
   <PageHeader number="02 / About" heading={page.heading} lead={page.lead} />
 
@@ -19,16 +19,18 @@ const CONTACT_EMAIL = import.meta.env.CONTACT_EMAIL || 'daniel@vogler-consulting
       <div class="col-span-12 md:col-span-3">
         <p class="text-sm tracking-wider uppercase text-accent">Approach</p>
       </div>
-      <div class="col-span-12 md:col-span-9 space-y-6 text-lg text-ink/85 leading-relaxed max-w-3xl">
+      <div
+        class="col-span-12 md:col-span-9 space-y-6 text-lg text-ink/85 leading-relaxed max-w-3xl"
+      >
         <p>
-          VOGLER CONSULTING is a Swiss company focused on data-driven and agentic AI solutions.
-          We combine solid data-engineering practices with modern cloud architectures and deliver measurable results,
-          not demos.
+          VOGLER CONSULTING is a Swiss company focused on data-driven and agentic AI solutions. We
+          combine solid data-engineering practices with modern cloud architectures and deliver
+          measurable results, not demos.
         </p>
         <p>
-          We work in three modes: as a delivery partner for tailored applications, pipelines, and products, as a
-          sparring partner for strategy, roadmap, and internal initiatives, or as a workshop partner training
-          teams in the right practices.
+          We work in three modes: as a delivery partner for tailored applications, pipelines, and
+          products, as a sparring partner for strategy, roadmap, and internal initiatives, or as a
+          workshop partner training teams in the right practices.
         </p>
       </div>
     </div>

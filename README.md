@@ -25,21 +25,21 @@ flowchart LR
 
 ## Stack
 
-| Layer | Choice |
-|---|---|
-| Framework | [Astro 6](https://astro.build) (static output) |
-| Styling | [Tailwind CSS 4](https://tailwindcss.com) via `@tailwindcss/vite` |
-| Icons | [Simple Icons](https://simpleicons.org) via `astro-icon` |
-| Fonts | Self-hosted Inter Variable ([Fontsource](https://fontsource.org)) |
-| Content typing | Astro Content Collections + Zod |
-| i18n | Astro built-in routing (DE default, EN at `/en/`) |
-| Image opt. | Astro `<Image>` + `sharp` |
-| Sitemap | `@astrojs/sitemap` with hreflang alternates |
-| Type checking | TypeScript 5 (strict) |
-| CI | GitHub Actions → [`deploy.yml`](.github/workflows/deploy.yml) |
-| Hosting | GitHub Pages |
-| Runtime (build) | Node 22.12+ (see [`.nvmrc`](.nvmrc)) |
-| Package manager | pnpm 9 |
+| Layer           | Choice                                                            |
+| --------------- | ----------------------------------------------------------------- |
+| Framework       | [Astro 6](https://astro.build) (static output)                    |
+| Styling         | [Tailwind CSS 4](https://tailwindcss.com) via `@tailwindcss/vite` |
+| Icons           | [Simple Icons](https://simpleicons.org) via `astro-icon`          |
+| Fonts           | Self-hosted Inter Variable ([Fontsource](https://fontsource.org)) |
+| Content typing  | Astro Content Collections + Zod                                   |
+| i18n            | Astro built-in routing (DE default, EN at `/en/`)                 |
+| Image opt.      | Astro `<Image>` + `sharp`                                         |
+| Sitemap         | `@astrojs/sitemap` with hreflang alternates                       |
+| Type checking   | TypeScript 5 (strict)                                             |
+| CI              | GitHub Actions → [`deploy.yml`](.github/workflows/deploy.yml)     |
+| Hosting         | GitHub Pages                                                      |
+| Runtime (build) | Node 22.12+ (see [`.nvmrc`](.nvmrc))                              |
+| Package manager | pnpm 9                                                            |
 
 ## Local development
 
@@ -56,11 +56,15 @@ pnpm check         # astro check + tsc strict
 pnpm build         # produces ./dist
 pnpm preview       # serves ./dist locally on :4321
 pnpm format        # prettier --write .
+pnpm verify        # build, formatting, secret and leak scans, DE/EN parity
 ```
+
+Contributor and agent guidance, including the repository rules and the
+definition of done, lives in [`AGENTS.md`](AGENTS.md).
 
 ## Environment
 
-Copy [`.env.example`](.env.example) to `.env.local` for local overrides. Production values are injected by GitHub Actions; the only required runtime variable is `SITE_URL` (set in the workflow). `CONTACT_EMAIL` falls back to `daniel@vogler-consulting.ch` if not set.
+Copy [`.env.example`](.env.example) to `.env.local` for local overrides. Production values are injected by GitHub Actions; the only required runtime variable is `SITE_URL` (set in the workflow). `CONTACT_EMAIL` falls back to `info@vogler-consulting.ch` if not set (see [`src/data/contact.ts`](src/data/contact.ts), the single place the address is defined).
 
 ## Project layout
 
@@ -71,11 +75,12 @@ src/
   layouts/            BaseLayout
   components/         Hero, Header, Footer, ServiceCard, LogoConveyor, ...
   content/            Markdown for services / team / partners (typed via content.config.ts)
-  data/               carousel logo list
+  data/               contact address, service groups, careers profiles, logo list
   i18n/               typed string tables (de.ts, en.ts)
   styles/global.css   Tailwind v4 @theme tokens + accent palette
-scripts/              build-time helpers (OG image generation via sharp)
-.github/workflows/    CI definition
+scripts/              build-time helpers (OG image generation, verify gate)
+.githooks/            pre-commit and commit-msg guards (git config core.hooksPath .githooks)
+.github/workflows/    CI definitions (deploy, verify)
 ```
 
 ## Deployment

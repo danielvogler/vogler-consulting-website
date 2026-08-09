@@ -6,12 +6,16 @@ import Partner from '~/components/Partner.astro';
 import Section from '~/components/Section.astro';
 import ContactCTA from '~/components/ContactCTA.astro';
 import { t } from '~/i18n';
+import { CONTACT_EMAIL } from '~/data/contact';
 
 const lang = 'de' as const;
 const strings = t(lang);
 const page = strings.pages.projects;
 
-const all = await getCollection('partners', (e) => e.data.lang === lang && e.data.kind === 'project');
+const all = await getCollection(
+  'partners',
+  (e) => e.data.lang === lang && e.data.kind === 'project',
+);
 all.sort((a, b) => a.data.order - b.data.order);
 
 const projects = await Promise.all(
@@ -20,25 +24,26 @@ const projects = await Promise.all(
     return { data: entry.data, Content };
   }),
 );
-
-const CONTACT_EMAIL = import.meta.env.CONTACT_EMAIL || 'daniel@vogler-consulting.ch';
 ---
+
 <BaseLayout title={page.title} description={page.lead} lang={lang}>
   <PageHeader number="04 / Projekte" heading={page.heading} lead={page.lead} />
 
   <Section>
-    {projects.length > 0 ? (
-      <>
-        {projects.map(({ data, Content }) => (
-          <Partner name={data.name} url={data.url} kind={data.kind}>
-            <Content />
-          </Partner>
-        ))}
-        <div class="border-t border-rule" />
-      </>
-    ) : (
-      <p class="text-muted">Demnächst.</p>
-    )}
+    {
+      projects.length > 0 ? (
+        <>
+          {projects.map(({ data, Content }) => (
+            <Partner name={data.name} url={data.url} kind={data.kind}>
+              <Content />
+            </Partner>
+          ))}
+          <div class="border-t border-rule" />
+        </>
+      ) : (
+        <p class="text-muted">Demnächst.</p>
+      )
+    }
   </Section>
 
   <ContactCTA lang={lang} contactHref={`mailto:${CONTACT_EMAIL}`} />

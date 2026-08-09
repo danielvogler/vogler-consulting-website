@@ -1,0 +1,115 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import PageHeader from '~/components/PageHeader.astro';
+import Section from '~/components/Section.astro';
+import ContactCTA from '~/components/ContactCTA.astro';
+import { t } from '~/i18n';
+import { CONTACT_EMAIL } from '~/data/contact';
+import { PROFILES_DE, EXPECTATIONS_DE } from '~/data/careers';
+
+const lang = 'de' as const;
+const strings = t(lang);
+const page = strings.pages.careers;
+
+const applyHref = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('Initiativbewerbung')}`;
+---
+
+<BaseLayout title={page.title} description={page.lead} lang={lang}>
+  <PageHeader number="02 / Karriere" heading={page.heading} lead={page.lead} />
+
+  <Section>
+    <div class="grid grid-cols-12 gap-6 md:gap-10">
+      <div class="col-span-12 md:col-span-3">
+        <p class="text-sm tracking-wider uppercase text-accent">Wen wir suchen</p>
+      </div>
+      <div
+        class="col-span-12 md:col-span-9 space-y-6 text-lg text-ink/85 leading-relaxed max-w-3xl"
+      >
+        <p>
+          Wir arbeiten mit einem kleinen Kreis aus festen und freien Fachleuten und erweitern ihn,
+          wenn wir auf die richtigen Personen treffen. Projekte kommen kurzfristig, deshalb lohnt
+          sich der Kontakt auch ohne ausgeschriebene Stelle.
+        </p>
+        <p>
+          Was alle Profile verbindet: Sie arbeiten nahe bei der Kundschaft. Sie verstehen zuerst das
+          Geschäft, leiten daraus eine tragfähige Architektur ab und bringen die Lösung
+          anschliessend selbst in den produktiven Betrieb. Der Übergang zwischen Verstehen,
+          Entwerfen und Bauen findet im selben Kopf statt, nicht zwischen drei Abteilungen.
+        </p>
+        <p>
+          Diese Seite beschreibt die Profile, auf denen unsere Leistungen aufbauen. Wenn Sie sich
+          darin wiedererkennen, schreiben Sie uns.
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <Section bordered>
+    <div class="grid grid-cols-12 gap-6 md:gap-10">
+      <div class="col-span-12 md:col-span-3">
+        <p class="text-sm tracking-wider uppercase text-accent">Profile</p>
+      </div>
+      <div class="col-span-12 md:col-span-9 space-y-10 max-w-3xl">
+        {
+          PROFILES_DE.map((profile) => (
+            <div class="border-t border-rule/60 pt-6 first:border-t-0 first:pt-0">
+              <h2 class="text-2xl tracking-tight font-medium">{profile.title}</h2>
+              <p class="mt-2 text-base text-muted leading-relaxed">{profile.summary}</p>
+              <ul class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm text-ink/80">
+                {profile.skills.map((skill) => (
+                  <li class="flex items-baseline gap-2">
+                    <span class="text-accent">·</span>
+                    <span>{skill}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </Section>
+
+  <Section bordered>
+    <div class="grid grid-cols-12 gap-6 md:gap-10">
+      <div class="col-span-12 md:col-span-3">
+        <p class="text-sm tracking-wider uppercase text-accent">Was zählt</p>
+      </div>
+      <div class="col-span-12 md:col-span-9 grid sm:grid-cols-2 gap-x-10 gap-y-8 max-w-3xl">
+        {
+          EXPECTATIONS_DE.map((item) => (
+            <div>
+              <h3 class="text-xl tracking-tight font-medium">{item.title}</h3>
+              <p class="mt-2 text-sm text-muted leading-relaxed">{item.description}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </Section>
+
+  <Section bordered>
+    <div class="grid grid-cols-12 gap-6 md:gap-10">
+      <div class="col-span-12 md:col-span-3">
+        <p class="text-sm tracking-wider uppercase text-accent">Kontakt aufnehmen</p>
+      </div>
+      <div class="col-span-12 md:col-span-9 space-y-6 max-w-3xl">
+        <p class="text-lg text-ink/85 leading-relaxed">
+          Schreiben Sie uns kurz, woran Sie zuletzt gearbeitet haben und was Sie suchen. Ein Link
+          auf Code, ein Projekt oder etwas Geschriebenes sagt mehr als ein formaler Lebenslauf. Wir
+          antworten auch dann, wenn gerade nichts offen ist.
+        </p>
+        <p>
+          <a
+            href={applyHref}
+            class="inline-flex items-center text-base tracking-tight border-b border-ink hover:border-accent hover:text-accent transition-colors pb-0.5"
+          >
+            Initiativbewerbung senden →
+          </a>
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <ContactCTA lang={lang} contactHref={`mailto:${CONTACT_EMAIL}`} />
+</BaseLayout>

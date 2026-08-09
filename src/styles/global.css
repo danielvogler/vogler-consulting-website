@@ -1,18 +1,18 @@
-@import "tailwindcss";
-@import "@fontsource-variable/inter/wght.css";
-@import "@fontsource-variable/inter/wght-italic.css";
+@import 'tailwindcss';
+@import '@fontsource-variable/inter/wght.css';
+@import '@fontsource-variable/inter/wght-italic.css';
 
 @theme {
   --color-paper: oklch(0.978 0.012 30);
   --color-ink: oklch(0.16 0 0);
-  --color-muted: oklch(0.50 0 0);
+  --color-muted: oklch(0.5 0 0);
   --color-rule: oklch(0.86 0.03 30);
   --color-accent: oklch(0.62 0.22 32);
   --color-accent-soft: oklch(0.95 0.04 30);
   --color-accent-faint: oklch(0.96 0.018 30);
 
-  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
 
   --container-content: 72rem;
 }
@@ -24,7 +24,7 @@ html {
 }
 
 body {
-  font-feature-settings: "ss01", "cv11";
+  font-feature-settings: 'ss01', 'cv11';
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }

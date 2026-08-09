@@ -10,11 +10,12 @@ import LogoConveyor from '~/components/LogoConveyor.astro';
 import { t } from '~/i18n';
 import { labelForTrack } from '~/data/service-groups';
 import { isWorkshop, workshopHref } from '~/data/workshops';
+import { hasServiceDetail, serviceDetailHref } from '~/data/service-details';
+import { CONTACT_EMAIL } from '~/data/contact';
 
 const lang = 'en' as const;
 const strings = t(lang);
 const page = strings.pages.services;
-const detailLabel = 'View workshop';
 
 const all = await getCollection('services', (e) => e.data.lang === lang);
 all.sort((a, b) => a.data.order - b.data.order);
@@ -27,35 +28,41 @@ const services = await Promise.all(
       data: entry.data,
       Content,
       number: `${String(i + 1).padStart(2, '0')} / ${group}`,
-      detailHref: isWorkshop(entry) ? workshopHref(entry) : undefined,
+      detailHref: isWorkshop(entry)
+        ? workshopHref(entry)
+        : hasServiceDetail(entry)
+          ? serviceDetailHref(entry)
+          : undefined,
+      detailLabel: isWorkshop(entry) ? 'View workshop' : 'Our approach',
     };
   }),
 );
-
-const CONTACT_EMAIL = import.meta.env.CONTACT_EMAIL || 'daniel@vogler-consulting.ch';
 ---
+
 <BaseLayout title={page.title} description={page.lead} lang={lang}>
   <PageHeader number="01 / Services" heading={page.heading} lead={page.lead} />
 
   <ServiceMap lang={lang} />
 
   <Section>
-    {services.map(({ data, Content, number, detailHref }) => (
-      <ServiceCard
-        id={`service-${data.track}`}
-        number={number}
-        title={data.title}
-        bluf={data.bluf}
-        topics={data.topics}
-        track={data.track}
-        lang={lang}
-        detailHref={detailHref}
-        detailLabel={detailHref ? detailLabel : undefined}
-      >
-        <Content />
-      </ServiceCard>
-    ))}
-    <div class="border-t border-rule" />
+    {
+      services.map(({ data, Content, number, detailHref, detailLabel }) => (
+        <ServiceCard
+          id={`service-${data.track}`}
+          number={number}
+          title={data.title}
+          bluf={data.bluf}
+          topics={data.topics}
+          track={data.track}
+          lang={lang}
+          detailHref={detailHref}
+          detailLabel={detailHref ? detailLabel : undefined}
+        >
+          <Content />
+        </ServiceCard>
+      ))
+    }
+    <div class="border-t border-rule"></div>
   </Section>
 
   <LogoConveyor label="Tech stack" />

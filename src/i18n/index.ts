@@ -9,13 +9,28 @@ export function t(locale: Locale) {
   return strings[locale];
 }
 
+/** Top-level navigation. Each entry may open a dropdown, see Header.astro. */
 export function getNavLinks(locale: Locale) {
   const s = strings[locale];
   const prefix = locale === 'de' ? '' : '/en';
   return [
     { href: `${prefix}/services`, label: s.nav.services },
     { href: `${prefix}/about`, label: s.nav.about },
+  ];
+}
+
+/**
+ * The pages grouped under "About". They keep their existing top-level URLs so
+ * that /team stays where search engines already found it; only the navigation
+ * groups them.
+ */
+export function getAboutLinks(locale: Locale) {
+  const s = strings[locale];
+  const prefix = locale === 'de' ? '' : '/en';
+  return [
+    { href: `${prefix}/about`, label: s.nav.about },
     { href: `${prefix}/team`, label: s.nav.team },
+    { href: `${prefix}/careers`, label: s.nav.careers },
     // Projects is intentionally disabled in the public nav.
     // To re-enable: move src/_drafts/{,en/}projects.astro back into src/pages/
     // and uncomment the line below + the entry tile in src/pages/{,en/}index.astro.

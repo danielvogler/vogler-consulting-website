@@ -4,37 +4,61 @@ import Hero from '~/components/Hero.astro';
 import EntryTile from '~/components/EntryTile.astro';
 import Section from '~/components/Section.astro';
 import ContactCTA from '~/components/ContactCTA.astro';
-import { getNavLinks, t } from '~/i18n';
+import { getAboutLinks, getNavLinks, t } from '~/i18n';
+import { CONTACT_EMAIL } from '~/data/contact';
 
 const lang = 'de' as const;
 const strings = t(lang);
 const navLinks = getNavLinks(lang);
-
-const CONTACT_EMAIL = import.meta.env.CONTACT_EMAIL || 'daniel@vogler-consulting.ch';
+const [aboutLink, teamLink, careersLink] = getAboutLinks(lang);
 
 const entries = [
-  { number: '01', title: strings.hero.entries.services, href: navLinks[0].href, description: 'End-to-End-Delivery und Workshops.' },
-  { number: '02', title: strings.hero.entries.about, href: navLinks[1].href, description: 'Ansatz und Werte.' },
-  { number: '03', title: strings.hero.entries.team, href: navLinks[2].href, description: 'Unser Netzwerk und unsere Partner.' },
-  // 04 Projekte: re-enable when the projects page is moved back into src/pages/.
-  // { number: '04', title: strings.hero.entries.projects, href: '/projects', description: 'Referenzen aus unserer Arbeit.' },
+  {
+    number: '01',
+    title: strings.hero.entries.services,
+    href: navLinks[0].href,
+    description: 'AI Roadmap, KI-Agenten, Datenprodukte und Workshops.',
+  },
+  {
+    number: '02',
+    title: strings.hero.entries.about,
+    href: aboutLink.href,
+    description: 'Ansatz und Werte.',
+  },
+  {
+    number: '03',
+    title: strings.hero.entries.team,
+    href: teamLink.href,
+    description: 'Unser Netzwerk und unsere Partner.',
+  },
+  {
+    number: '04',
+    title: strings.hero.entries.careers,
+    href: careersLink.href,
+    description: 'Profile, die unsere Leistungen tragen.',
+  },
+  // 05 Projekte: re-enable when the projects page is moved back into src/pages/.
+  // { number: '05', title: strings.hero.entries.projects, href: '/projects', description: 'Referenzen aus unserer Arbeit.' },
 ];
 ---
+
 <BaseLayout title={strings.pages.home.title} lang={lang}>
   <Hero slogan={strings.hero.slogan} />
 
   <Section>
     <p class="text-sm tracking-wider uppercase text-accent mb-8">Navigation</p>
     <div>
-      {entries.map((entry) => (
-        <EntryTile
-          number={entry.number}
-          title={entry.title}
-          description={entry.description}
-          href={entry.href}
-        />
-      ))}
-      <div class="border-t border-rule" />
+      {
+        entries.map((entry) => (
+          <EntryTile
+            number={entry.number}
+            title={entry.title}
+            description={entry.description}
+            href={entry.href}
+          />
+        ))
+      }
+      <div class="border-t border-rule"></div>
     </div>
   </Section>
 
