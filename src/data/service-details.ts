@@ -11,7 +11,7 @@ export function hasServiceDetail(entry: CollectionEntry<'services'>): boolean {
 
 // Filenames follow `<slug>.<lang>.md`. Astro's glob loader derives `entry.id`
 // from the filename minus the extension, and in some versions strips the dot
-// before the language code — see the same defensive handling in `workshops.ts`.
+// before the language code, see the same defensive handling in `workshops.ts`.
 export function serviceDetailSlug(entry: CollectionEntry<'services'>): string {
   const lang = entry.data.lang;
   return entry.id.replace(new RegExp(`\\.?${lang}$`), '');
