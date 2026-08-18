@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="480 127 1416 354" width="2400" height="600">
+  <rect x="480" y="127" width="1416" height="354" fill="#fbf4f0"/>
+  <text x="640" y="280" font-family="Inter" font-weight="500" font-size="44" letter-spacing="-0.05em" fill="#1a1a1a">VOGLER</text>
+  <text x="640" y="332" font-family="Inter" font-weight="500" font-size="44" letter-spacing="-0.05em" fill="#1a1a1a">CONSULTING<tspan fill="#d63333">.</tspan></text>
+  <text x="1280" y="280" font-family="Inter" font-weight="400" font-size="24" letter-spacing="-0.01em" fill="#1a1a1a">AI, Autonomous Agents <tspan fill="#d63333">&amp;</tspan> Data Analytics.</text>
+  <text x="1280" y="314" font-family="Inter" font-weight="400" font-size="24" letter-spacing="-0.01em" fill="#1a1a1a">Cloud or On-Premises<tspan fill="#d63333">.</tspan></text>
+  <text x="1280" y="360" font-family="Inter" font-size="14" font-weight="500" letter-spacing="0.18em" fill="#7d7d7d">VOGLER-CONSULTING.CH</text>
+</svg>

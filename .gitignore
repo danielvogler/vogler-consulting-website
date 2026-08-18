@@ -28,9 +28,6 @@ pnpm-debug.log*
 # opencode session state
 .sisyphus/
 
-# off-site brand assets (LinkedIn, Workspace, signatures), local-only
-brand/
-
 # workshop source material (PDFs, decks), local-only, root-level only
 /workshops/
 

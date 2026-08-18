@@ -9,5 +9,4 @@ pnpm-lock.yaml
 # local-only scratch space
 tmp/
 notes/
-brand/
 workshops/
