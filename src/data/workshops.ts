@@ -2,6 +2,8 @@ import type { CollectionEntry } from 'astro:content';
 
 // Tracks that render as individual /workshops/[slug] detail pages.
 export const WORKSHOP_TRACKS: readonly string[] = [
+  'agentic-ai-leadership',
+  'ai-governance',
   'llm-prompting',
   'coding-agents',
   'agentic-ai',

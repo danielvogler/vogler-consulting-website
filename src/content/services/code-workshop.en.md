@@ -2,7 +2,7 @@
 title: Code Workshop
 track: code
 bluf: Modern engineering practices for production-grade Python.
-order: 12
+order: 14
 lang: en
 topics:
   - Git, CI/CD, and versioning

@@ -2,7 +2,7 @@
 title: Cloud Workshop
 track: cloud
 bluf: From cloud concepts to delivering insights to dashboards.
-order: 13
+order: 15
 lang: en
 topics:
   - Cloud concepts

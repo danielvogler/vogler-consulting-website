@@ -2,7 +2,7 @@
 title: Agentic AI Workshop
 track: agentic-ai
 bluf: Zuverlässige KI-Agenten entwerfen, betreiben und steuern.
-order: 10
+order: 12
 lang: de
 topics:
   - Konzepte und Frameworks

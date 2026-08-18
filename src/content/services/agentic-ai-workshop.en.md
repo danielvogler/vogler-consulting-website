@@ -2,7 +2,7 @@
 title: Agentic AI Workshop
 track: agentic-ai
 bluf: Designing, deploying, and governing reliable AI agents.
-order: 10
+order: 12
 lang: en
 topics:
   - Concepts and frameworks

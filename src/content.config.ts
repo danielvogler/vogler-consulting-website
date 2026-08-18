@@ -15,6 +15,8 @@ const services = defineCollection({
       'delivery',
       'discovery',
       'ai-roadmap',
+      'agentic-ai-leadership',
+      'ai-governance',
       'agentic-ai',
       'data',
       'code',
@@ -33,6 +35,10 @@ const services = defineCollection({
     languages: z.array(z.string()).optional(),
     locations: z.array(z.string()).optional(),
     booking: z.string().optional(),
+    // Rendered as a footnote under the workshop detail. Used where the subject
+    // matter needs a standing caveat, e.g. governance content is orientation
+    // for decisions and not legal advice.
+    disclaimer: z.string().optional(),
     agenda: z
       .array(
         z.object({

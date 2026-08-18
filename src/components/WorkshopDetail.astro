@@ -26,8 +26,19 @@ interface Props {
 
 const { entry, lang: _lang, labels } = Astro.props;
 const { Content } = await render(entry);
-const { title, bluf, topics, audience, format, duration, languages, locations, booking, agenda } =
-  entry.data;
+const {
+  title,
+  bluf,
+  topics,
+  audience,
+  format,
+  duration,
+  languages,
+  locations,
+  booking,
+  disclaimer,
+  agenda,
+} = entry.data;
 ---
 
 <PageHeader number={labels.eyebrow} heading={title} lead={bluf} />
@@ -154,6 +165,14 @@ const { title, bluf, topics, audience, format, duration, languages, locations, b
           )}
         </dl>
       </div>
+    )
+  }
+
+  {
+    disclaimer && (
+      <p class="mt-16 pt-8 border-t border-rule text-sm text-muted leading-relaxed max-w-3xl">
+        {disclaimer}
+      </p>
     )
   }
 </Section>
