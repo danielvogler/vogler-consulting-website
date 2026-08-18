@@ -1,0 +1,1297 @@
+---
+/*
+ * PARKED. Not used by any page. See AGENT-FIELD.md in this directory for what
+ * it is, what was learned building it, and how to switch it back on.
+ *
+ * The agent field: a routed board that holds perfectly still while pulses run
+ * its traces, lighting each one as they go and finishing wherever it ends.
+ *
+ * The geometry is what makes this read as a board rather than as another
+ * particle mesh, and it is a specific geometry. Earlier versions here were an
+ * arbitrary-angle graph (a network diagram), then a uniform lattice (graph
+ * paper), then right-angled routing (a schematic). A real board looks like
+ * none of those:
+ *
+ *   - Traces turn by 45 degrees, not 90. The diagonal is the signature of
+ *     every autorouter ever written, and its absence is why the right-angled
+ *     version still looked drawn by hand.
+ *   - Traces travel in bundles that turn together, holding their spacing
+ *     around every corner. A bundle is generated as one path and then offset,
+ *     with the corners mitred, so the parallel runs stay parallel the way
+ *     copper does.
+ *   - Corners are rounded. Sharp corners etch badly and no fabricator draws
+ *     them, which is why a sharp-cornered board looks like an illustration.
+ *   - Pad arrays, drilled as rings, punctuate the routing, and plenty of
+ *     traces simply stop. A board is full of dead ends.
+ *
+ * The motion is a signal, not a wanderer. A pulse starts at one end of a
+ * trace, runs it with a bright head and a short tail, and when the trace ends,
+ * the pulse ends with it: it flares on the terminal and is gone, and another
+ * starts elsewhere. Nothing doubles back, because a signal that reverses out
+ * of a dead end reads as something lost rather than as work being done.
+ *
+ * What it leaves behind is the point. A trace that has been run stays lit and
+ * cools over about half a minute, so the board carries a visible record of
+ * where the work has been.
+ *
+ * The pulses are graphite rather than brand red. Red everywhere reads as an
+ * alarm and fights the wordmark, and on paper the light bead you would use on
+ * a dark board is simply invisible: the equivalent of light-on-dark here is
+ * dark-on-light. Accent is spent in one place only, the flare where a pulse
+ * reaches a terminal, so the brand colour arrives as an event rather than as
+ * a wash.
+ *
+ * Layout is deterministic from a fixed seed. Every visitor sees the same
+ * board, which makes it a brand asset rather than noise, and makes a visual
+ * regression something you can look at twice.
+ *
+ * Guardrails, all deliberate:
+ *   - prefers-reduced-motion draws the board once and never starts the loop.
+ *     A still routed board is a perfectly good outcome, which is the sign the
+ *     concept is the right one.
+ *   - The loop stops when the tab is hidden or the field scrolls out of view.
+ *   - Device pixel ratio is capped at 2.
+ *   - Density comes from viewport area, so a phone gets a smaller board
+ *     rather than the same one squeezed into a tenth of the space.
+ *   - Colour comes from --field-* in global.css. Nothing is hardcoded here.
+ *   - aria-hidden and pointer-events: none. It is decoration, and it must
+ *     never be reachable, focusable or announced.
+ */
+interface Props {
+  /**
+   * `quiet` is the site setting. `active` is denser with more traffic, for a
+   * screen that is mostly empty. `off` renders the element and draws nothing,
+   * so the setting can be changed without touching the markup around it.
+   */
+  intensity?: 'off' | 'quiet' | 'active';
+  class?: string;
+}
+
+const { intensity = 'quiet', class: className = '' } = Astro.props;
+---
+
+<!--
+  The palette lives here rather than in global.css so this component is
+  self-contained while it is parked: re-enabling it is one import and one tag,
+  with nothing to remember to copy back. If it is ever adopted for good, these
+  belong beside the rest of the palette in global.css.
+
+  They are sRGB channel triplets rather than oklch because the canvas builds
+  colour strings with varying alpha, and `rgba(r g b / a)` parses everywhere
+  the site already runs. The values mirror --color-ink, --color-accent and
+  --color-paper; change those and these have to follow by hand.
+-->
+<style is:global>
+  :root {
+    --field-edge: 13 13 13; /* the routed board */
+    --field-node: 13 13 13; /* pads and vias */
+    --field-pulse: 13 13 13; /* the running pulse, its trail and cooling trace */
+    --field-agent: 237 57 26; /* the flare where a pulse reaches a terminal */
+    --field-paper: 255 245 243; /* knocked out behind a pad */
+  }
+</style>
+
+<canvas
+  class:list={['agent-field', className]}
+  data-agent-field
+  data-intensity={intensity}
+  aria-hidden="true"></canvas>
+
+<style>
+  .agent-field {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    /*
+     * The board spans the full width and is held back only from the band the
+     * headline and lead sit in. Cutting a hard hole empties out exactly the
+     * part of the screen people read; a soft mask keeps the routing continuous
+     * and still leaves 18px copy comfortable.
+     */
+    --field-hold: 0.3;
+    -webkit-mask-image: radial-gradient(
+      ellipse 84% 66% at 42% 46%,
+      rgba(0, 0, 0, var(--field-hold)),
+      rgba(0, 0, 0, 1) 82%
+    );
+    mask-image: radial-gradient(
+      ellipse 84% 66% at 42% 46%,
+      rgba(0, 0, 0, var(--field-hold)),
+      rgba(0, 0, 0, 1) 82%
+    );
+  }
+</style>
+
+<script>
+  interface FieldSettings {
+    /** Trace pitch in CSS pixels: the gap between two parallel runs. */
+    readonly pitch: number;
+    /** Routing attempts per million square pixels of viewport. */
+    readonly density: number;
+    /** Widest bundle, in parallel traces. */
+    readonly bundle: number;
+    /** Pulses running at once. */
+    readonly pulses: number;
+    /** Pixels per second a pulse travels. */
+    readonly speed: number;
+    readonly traceAlpha: number;
+    readonly padAlpha: number;
+  }
+
+  const SETTINGS: Record<'quiet' | 'active', FieldSettings> = {
+    // Interior pages carry body copy across the full width, so the board has
+    // to sit further back there than it does behind a hero that is one line of
+    // display type.
+    quiet: {
+      pitch: 7,
+      density: 300,
+      bundle: 5,
+      pulses: 2,
+      speed: 210,
+      traceAlpha: 0.075,
+      padAlpha: 0.1,
+    },
+    active: {
+      pitch: 6.5,
+      density: 360,
+      bundle: 6,
+      pulses: 4,
+      speed: 230,
+      traceAlpha: 0.12,
+      padAlpha: 0.16,
+    },
+  };
+
+  /** Seconds a run trace takes to cool back to the unlit board. */
+  const COOLING = 34;
+  /** Seconds a terminal flare takes to fade. */
+  const FLARE = 1.1;
+  /** Seconds between a pulse finishing and the next one starting. */
+  const GAP = 0.5;
+  /** Junctions one pulse may cross before it has to end somewhere. */
+  const MAX_HOPS = 7;
+  /** Length of the bright tail behind a pulse head, in pixels. */
+  const TAIL = 42;
+  /** Corner radius in pixels. Copper is never mitred to a point. */
+  const CORNER = 4;
+  /** Shortest run worth keeping, in grid steps. */
+  const MIN_STEPS = 8;
+  /** Layout seed. Fixed, so the board is the same for everyone. */
+  const SEED = 0x5eed1a;
+
+  /**
+   * The eight headings a router may leave a point in, in order, so that a
+   * turn of one place is a turn of 45 degrees.
+   */
+  const HEADINGS = [
+    [1, 0],
+    [1, 1],
+    [0, 1],
+    [-1, 1],
+    [-1, 0],
+    [-1, -1],
+    [0, -1],
+    [1, -1],
+  ] as const;
+
+  interface Point {
+    x: number;
+    y: number;
+  }
+
+  /**
+   * Copper comes in weights, and a board where every run is the same width
+   * reads as flat. Power is rare and heavy, buses are the middle of the
+   * distribution, signal is most of it and nearly hairline.
+   */
+  type Weight = 'power' | 'bus' | 'signal';
+
+  const WEIGHTS: Record<Weight, { width: number; alpha: number }> = {
+    power: { width: 2.4, alpha: 1.5 },
+    bus: { width: 1.3, alpha: 1.15 },
+    signal: { width: 0.8, alpha: 0.95 },
+  };
+
+  interface Trace {
+    points: Point[];
+    /** Distance from the start of the trace to each point. */
+    marks: number[];
+    length: number;
+    width: number;
+    /** Multiplier on the base trace alpha, so the board has depth. */
+    alpha: number;
+    /** 1 just after a pulse ran it, cooling to 0 over COOLING seconds. */
+    lit: number;
+  }
+
+  interface Pad {
+    x: number;
+    y: number;
+    radius: number;
+    /** A terminal caps a trace and can flare; a drilled pad is scenery. */
+    terminal: boolean;
+    flare: number;
+  }
+
+  interface Footprint {
+    col: number;
+    row: number;
+    /** Size in grid cells, not pixels. */
+    width: number;
+    height: number;
+  }
+
+  /** A pad on the outside of a footprint, and the way its trace leaves it. */
+  interface Launch {
+    col: number;
+    row: number;
+    heading: number;
+  }
+
+  interface Pulse {
+    trace: number;
+    /** Where the head is, as a distance along the trace. */
+    at: number;
+    /** Where it set off from, so the trace can light behind it. */
+    from: number;
+    /** The end it is running towards: 0 or the trace's length. */
+    toward: number;
+    /** Junctions crossed on this journey, so a run cannot loop for ever. */
+    hops: number;
+    /** Seconds before this pulse restarts somewhere else. */
+    wait: number;
+  }
+
+  /** Where a trace ends on top of another one, and how far along that is. */
+  interface Junction {
+    host: number;
+    hostDistance: number;
+  }
+
+  /** Small, fast, seedable PRNG. The board must not vary between visitors. */
+  function mulberry32(seed: number): () => number {
+    let a = seed;
+    return () => {
+      a |= 0;
+      a = (a + 0x6d2b79f5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  /**
+   * Offset a polyline sideways by `d` pixels, mitring the corners: each
+   * segment is shifted along its own normal and consecutive shifted lines are
+   * intersected. This is what keeps a bundle parallel around a turn, which
+   * drawing each trace independently never does.
+   */
+  function offsetPolyline(points: Point[], d: number): Point[] {
+    if (points.length < 2) return points;
+
+    const directions: Point[] = [];
+    const normals: Point[] = [];
+    for (let i = 1; i < points.length; i++) {
+      const dx = points[i].x - points[i - 1].x;
+      const dy = points[i].y - points[i - 1].y;
+      const length = Math.hypot(dx, dy) || 1;
+      directions.push({ x: dx / length, y: dy / length });
+      normals.push({ x: -dy / length, y: dx / length });
+    }
+
+    const out: Point[] = [{ x: points[0].x + normals[0].x * d, y: points[0].y + normals[0].y * d }];
+
+    for (let i = 1; i < points.length - 1; i++) {
+      const a = { x: points[i].x + normals[i - 1].x * d, y: points[i].y + normals[i - 1].y * d };
+      const b = { x: points[i].x + normals[i].x * d, y: points[i].y + normals[i].y * d };
+      const da = directions[i - 1];
+      const db = directions[i];
+      const denominator = da.x * db.y - da.y * db.x;
+
+      if (Math.abs(denominator) < 1e-6) {
+        out.push(a);
+        continue;
+      }
+      const t = ((b.x - a.x) * db.y - (b.y - a.y) * db.x) / denominator;
+      out.push({ x: a.x + da.x * t, y: a.y + da.y * t });
+    }
+
+    const last = points.length - 1;
+    const n = normals[normals.length - 1];
+    out.push({ x: points[last].x + n.x * d, y: points[last].y + n.y * d });
+    return out;
+  }
+
+  /** Trace a polyline with rounded corners, the way copper is actually laid. */
+  function pathRounded(ctx: CanvasRenderingContext2D, points: Point[], radius: number): void {
+    ctx.moveTo(points[0].x, points[0].y);
+    for (let i = 1; i < points.length - 1; i++) {
+      ctx.arcTo(points[i].x, points[i].y, points[i + 1].x, points[i + 1].y, radius);
+    }
+    const last = points[points.length - 1];
+    ctx.lineTo(last.x, last.y);
+  }
+
+  class AgentField {
+    private readonly canvas: HTMLCanvasElement;
+    private readonly ctx: CanvasRenderingContext2D;
+    private readonly settings: FieldSettings;
+    private readonly reduced: boolean;
+
+    private traces: Trace[] = [];
+    private pads: Pad[] = [];
+    private footprints: Footprint[] = [];
+    private components: Footprint[] = [];
+    private chip: Footprint | null = null;
+    private chipTraces: number[] = [];
+    private pulses: Pulse[] = [];
+    private litTraces = new Set<number>();
+    /** Traces that end on another trace, keyed by the trace that ends. */
+    private junctions = new Map<number, Junction>();
+
+    /** The board never moves, so the unlit routing is drawn once and blitted. */
+    private base: HTMLCanvasElement | null = null;
+
+    private colours = {
+      edge: '0 0 0',
+      node: '0 0 0',
+      pulse: '0 0 0',
+      agent: '0 0 0',
+      paper: '255 255 255',
+    };
+    private width = 0;
+    private height = 0;
+    private dpr = 1;
+    private frame = 0;
+    private last = 0;
+    private visible = true;
+    private onScreen = true;
+    private resizeTimer = 0;
+    private random: () => number = Math.random;
+
+    constructor(canvas: HTMLCanvasElement, settings: FieldSettings) {
+      this.canvas = canvas;
+      this.ctx = canvas.getContext('2d')!;
+      this.settings = settings;
+      this.reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    }
+
+    start(): void {
+      this.readTokens();
+      this.measure();
+      this.build();
+      this.paint();
+
+      if (this.reduced) return;
+
+      window.addEventListener('resize', this.onResize, { passive: true });
+      document.addEventListener('visibilitychange', this.onVisibility);
+
+      const observer = new IntersectionObserver(([entry]) => {
+        this.onScreen = entry.isIntersecting;
+        this.sync();
+      });
+      observer.observe(this.canvas);
+
+      this.sync();
+    }
+
+    private readTokens(): void {
+      const styles = getComputedStyle(document.documentElement);
+      const read = (name: string) => styles.getPropertyValue(name).trim();
+      this.colours = {
+        edge: read('--field-edge'),
+        node: read('--field-node'),
+        pulse: read('--field-pulse'),
+        agent: read('--field-agent'),
+        paper: read('--field-paper'),
+      };
+    }
+
+    /**
+     * Pitch is a physical size, not a fraction of the viewport, so a phone
+     * would otherwise get the same 7px routing squeezed into a fifth of the
+     * area: correct by the numbers, unreadably fine to look at. Coarsening it
+     * on a small screen keeps the board at the same apparent scale.
+     */
+    private get pitch(): number {
+      const scale = this.width < 640 ? 1.7 : this.width < 1024 ? 1.3 : 1;
+      return this.settings.pitch * scale;
+    }
+
+    private measure(): void {
+      this.dpr = Math.min(window.devicePixelRatio || 1, 2);
+      this.width = this.canvas.clientWidth;
+      this.height = this.canvas.clientHeight;
+      this.canvas.width = Math.round(this.width * this.dpr);
+      this.canvas.height = Math.round(this.height * this.dpr);
+      this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    }
+
+    private build(): void {
+      this.random = mulberry32(SEED);
+      this.traces = [];
+      this.pads = [];
+      this.litTraces.clear();
+      this.junctions.clear();
+
+      this.route();
+      this.drawBase();
+
+      this.pulses = [];
+      for (let i = 0; i < this.settings.pulses && this.traces.length > 0; i++) {
+        this.pulses.push({ ...this.spawn(), wait: i * GAP * 2 });
+      }
+    }
+
+    /**
+     * Footprints first, then the routing that leaves them. This order is the
+     * whole difference between a board and a pile of loose lines: on real
+     * hardware every trace starts at a pad, so the copper fans out of the
+     * components and the eye reads the two as one system. Routing laid down
+     * first and decorated with pads afterwards never connects to anything,
+     * however good the individual runs look.
+     */
+    private route(): void {
+      const pitch = this.pitch;
+      const cols = Math.ceil(this.width / pitch) + 2;
+      const rows = Math.ceil(this.height / pitch) + 2;
+      const taken = new Uint8Array(cols * rows);
+      // Copper marks only the cells a centre line actually runs through, and
+      // remembers which trace they belong to. `taken` includes clearance, so
+      // it cannot answer the question a junction needs: is there metal here?
+      const copper = new Int32Array(cols * rows).fill(-1);
+
+      const clear = (col: number, row: number, reach: number) => {
+        for (let dc = -reach; dc <= reach; dc++) {
+          for (let dr = -reach; dr <= reach; dr++) {
+            const c = col + dc;
+            const r = row + dr;
+            if (c < 0 || r < 0 || c >= cols || r >= rows) return false;
+            if (taken[r * cols + c] === 1) return false;
+          }
+        }
+        return true;
+      };
+
+      // Occupancy is claimed only once a run is finished. A path that claims
+      // ground as it goes blocks its own next step and stops after one cell.
+      const claim = (walked: number[], reach: number) => {
+        walked.forEach((cell) => {
+          const col = cell % cols;
+          const row = (cell - col) / cols;
+          for (let dc = -reach; dc <= reach; dc++) {
+            for (let dr = -reach; dr <= reach; dr++) {
+              const c = col + dc;
+              const r = row + dr;
+              if (c < 0 || r < 0 || c >= cols || r >= rows) continue;
+              taken[r * cols + c] = 1;
+            }
+          }
+        });
+      };
+
+      this.traces = [];
+      this.pads = [];
+      this.components = [];
+      this.chip = null;
+
+      // The chip's fan-out is routed before anything else, so it gets clean
+      // substrate to radiate into and everything later packs around it.
+      const launches = [
+        ...this.placeChip(cols, rows),
+        ...this.placeFootprints(cols, rows),
+        ...this.placeComponents(cols, rows),
+      ];
+      // Fan-out first, while there is still open substrate to fan into.
+      launches.forEach((launch) => {
+        this.run(
+          launch.col,
+          launch.row,
+          launch.heading,
+          1,
+          'signal',
+          1,
+          clear,
+          claim,
+          copper,
+          cols,
+        );
+      });
+      this.blockFootprints(taken, cols, rows);
+      this.blockComponents(taken, cols, rows);
+      if (this.chip) this.block([this.chip], taken, cols, rows);
+
+      const { density, bundle } = this.settings;
+      const attempts = Math.round((this.width * this.height * density) / 1_000_000);
+      for (let attempt = 0; attempt < attempts; attempt++) {
+        const tracks = 1 + Math.floor(this.random() * this.random() * bundle);
+        const roll = this.random();
+        const weight: Weight = roll < 0.07 ? 'power' : roll < 0.3 ? 'bus' : 'signal';
+        // Half the bundle either side of its centre line, and one lane spare.
+        // Any more clearance than this and the board saturates while it still
+        // looks half empty: the limit on density is the width a run reserves,
+        // not how many runs are attempted.
+        const reach = Math.max(1, Math.ceil(tracks / 2));
+        const col = Math.floor(this.random() * cols);
+        const row = Math.floor(this.random() * rows);
+        const heading = Math.floor(this.random() * HEADINGS.length);
+        this.run(col, row, heading, tracks, weight, reach, clear, claim, copper, cols);
+      }
+
+      this.capTerminals();
+      this.placeVias();
+      this.markChipTraces();
+    }
+
+    /**
+     * Which copper leaves the package. Most pulses start there, so the motion
+     * reads as traffic to and from the thing the composition is built around
+     * rather than as activity scattered at random over the board.
+     */
+    private markChipTraces(): void {
+      this.chipTraces = [];
+      if (!this.chip) return;
+      const pitch = this.pitch;
+      const reach = pitch * 4;
+      const left = this.chip.col * pitch - reach;
+      const right = (this.chip.col + this.chip.width) * pitch + reach;
+      const top = this.chip.row * pitch - reach;
+      const bottom = (this.chip.row + this.chip.height) * pitch + reach;
+
+      this.traces.forEach((trace, index) => {
+        const near = [trace.points[0], trace.points[trace.points.length - 1]].some(
+          (point) => point.x >= left && point.x <= right && point.y >= top && point.y <= bottom,
+        );
+        if (near) this.chipTraces.push(index);
+      });
+    }
+
+    /**
+     * One run: head off, go straight until blocked, turn 45 degrees, repeat.
+     * Turning by one place around the compass and never two is what gives the
+     * board its diagonals; a right-angled router looks like a schematic.
+     */
+    private run(
+      startCol: number,
+      startRow: number,
+      startHeading: number,
+      tracks: number,
+      weight: Weight,
+      reach: number,
+      clear: (col: number, row: number, reach: number) => boolean,
+      claim: (walked: number[], reach: number) => void,
+      copper: Int32Array,
+      cols: number,
+    ): void {
+      const pitch = this.pitch;
+      let col = startCol;
+      let row = startRow;
+      let heading = startHeading;
+      if (!clear(col, row, reach)) return;
+
+      const corners: Point[] = [{ x: col * pitch, y: row * pitch }];
+      const walked: number[] = [row * cols + col];
+
+      let joined = -1;
+
+      for (let leg = 0; leg < 7 && joined < 0; leg++) {
+        const [dx, dy] = HEADINGS[heading];
+        // Long straights: a board's character is in its runs, not its turns.
+        const wanted = 4 + Math.floor(this.random() * 16);
+        let ran = 0;
+        while (ran < wanted && clear(col + dx, row + dy, reach)) {
+          col += dx;
+          row += dy;
+          walked.push(row * cols + col);
+          ran++;
+        }
+        if (ran > 0) corners.push({ x: col * pitch, y: row * pitch });
+
+        // Blocked. Before giving up, look a little further along this heading
+        // for metal: a run that stops one lane short of the trace it was
+        // heading for leaves an island, and a board of islands is not a board.
+        // Landing on it instead makes a junction and joins the network.
+        const hit = this.probeForCopper(col, row, dx, dy, copper, cols, reach + 3);
+        if (hit >= 0) {
+          const hitCol = hit % cols;
+          const hitRow = (hit - hitCol) / cols;
+          corners.push({ x: hitCol * pitch, y: hitRow * pitch });
+          walked.push(hit);
+          joined = copper[hit];
+          break;
+        }
+
+        if (ran === 0 && leg > 0) break;
+        heading = (heading + (this.random() < 0.5 ? 1 : HEADINGS.length - 1) + 8) % 8;
+      }
+
+      if (walked.length - 1 < MIN_STEPS || corners.length < 2) return;
+
+      const centre = this.layBundle(corners, tracks, weight);
+      claim(walked, Math.max(0, reach - 1));
+      walked.forEach((cell) => {
+        if (copper[cell] < 0) copper[cell] = centre;
+      });
+
+      if (joined >= 0) this.recordJunction(centre, joined);
+    }
+
+    /**
+     * Look along the heading for a cell that already carries copper, so a
+     * blocked run can end on the trace it was heading towards rather than a
+     * lane short of it.
+     */
+    private probeForCopper(
+      col: number,
+      row: number,
+      dx: number,
+      dy: number,
+      copper: Int32Array,
+      cols: number,
+      range: number,
+    ): number {
+      for (let step = 1; step <= range; step++) {
+        const c = col + dx * step;
+        const r = row + dy * step;
+        if (c < 0 || r < 0 || c >= cols) return -1;
+        const cell = r * cols + c;
+        if (cell < 0 || cell >= copper.length) return -1;
+        if (copper[cell] >= 0) return cell;
+      }
+      return -1;
+    }
+
+    /**
+     * Remember that `guest` ends on `host`, and how far along the host that
+     * happens, so a pulse arriving at the end of the guest can carry on
+     * instead of stopping at what is really a T rather than a dead end.
+     */
+    private recordJunction(guest: number, host: number): void {
+      const trace = this.traces[guest];
+      const end = trace.points[trace.points.length - 1];
+      const hostTrace = this.traces[host];
+      if (!hostTrace) return;
+
+      let best = 0;
+      let bestDistance = Infinity;
+      for (let i = 1; i < hostTrace.points.length; i++) {
+        const a = hostTrace.points[i - 1];
+        const b = hostTrace.points[i];
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const span = dx * dx + dy * dy;
+        const t =
+          span === 0
+            ? 0
+            : Math.max(0, Math.min(1, ((end.x - a.x) * dx + (end.y - a.y) * dy) / span));
+        const px = a.x + dx * t;
+        const py = a.y + dy * t;
+        const gap = Math.hypot(px - end.x, py - end.y);
+        if (gap < bestDistance) {
+          bestDistance = gap;
+          best = hostTrace.marks[i - 1] + Math.hypot(px - a.x, py - a.y);
+        }
+      }
+
+      this.junctions.set(guest, { host, hostDistance: best });
+      this.pads.push({ x: end.x, y: end.y, radius: 1.9, terminal: false, flare: 0 });
+    }
+
+    /**
+     * Footprints are the components: grids of drilled pads, the rows of rings
+     * a connector or a package leaves behind. Each pad on the outside of the
+     * grid hands back a launch point with a heading that faces away from the
+     * component, which is where the fan-out comes from.
+     */
+    private placeFootprints(cols: number, rows: number): Launch[] {
+      const pitch = this.pitch;
+      const step = 2;
+      // Deliberately few. A grid of drilled pads is the most eye-catching
+      // thing on a board and therefore the easiest to overuse: on a real one
+      // there is a package or two and a connector, not a field of them. The
+      // texture has to come from the routing.
+      const count = 2 + Math.floor(this.random() * 2);
+      const launches: Launch[] = [];
+      this.footprints = [];
+
+      for (let i = 0; i < count; i++) {
+        const across = 4 + Math.floor(this.random() * 9);
+        const deep = 1 + Math.floor(this.random() * 2);
+        const vertical = this.random() < 0.45;
+        const width = (vertical ? deep : across) * step;
+        const height = (vertical ? across : deep) * step;
+        const col = 2 + Math.floor(this.random() * Math.max(1, cols - width - 4));
+        const row = 2 + Math.floor(this.random() * Math.max(1, rows - height - 4));
+
+        const clash = [...this.footprints, ...(this.chip ? [this.chip] : [])].some(
+          (f) =>
+            col < f.col + f.width + 3 &&
+            col + width + 3 > f.col &&
+            row < f.row + f.height + 3 &&
+            row + height + 3 > f.row,
+        );
+        if (clash) continue;
+        this.footprints.push({ col, row, width, height });
+
+        for (let a = 0; a <= width; a += step) {
+          for (let b = 0; b <= height; b += step) {
+            const padCol = col + a;
+            const padRow = row + b;
+            this.pads.push({
+              x: padCol * pitch,
+              y: padRow * pitch,
+              radius: 2.3,
+              terminal: false,
+              flare: 0,
+            });
+
+            // Only the outer ring of a footprint gets a trace, the way the
+            // inner balls of a package are buried on another layer.
+            const outward = b === 0 ? 6 : b === height ? 2 : a === 0 ? 4 : a === width ? 0 : -1;
+            if (outward < 0) continue;
+            launches.push({ col: padCol, row: padRow, heading: outward });
+          }
+        }
+      }
+
+      return launches;
+    }
+
+    /**
+     * The one big package, and the reason the board has a subject at all.
+     * Every photograph of a real board has a centre: a large part with copper
+     * radiating from every side of it. Without one, this was an even field of
+     * texture, which is wallpaper however well the texture is made.
+     *
+     * It is placed off to one side, because the headline occupies the left of
+     * the screen and a focal point directly behind display type competes with
+     * it instead of supporting it.
+     */
+    private placeChip(cols: number, rows: number): Launch[] {
+      const pitch = this.pitch;
+      const span = Math.max(12, Math.min(26, Math.round(Math.min(cols, rows) * 0.2)));
+      const size = span % 2 === 0 ? span : span + 1;
+
+      // Right of centre, and vertically central: clear of the wordmark, clear
+      // of the page edges.
+      // Below the headline's line as well as right of it: level with display
+      // type, a focal point argues with the type instead of supporting it.
+      // On a narrow screen the type runs the full width, so there is no right
+      // to move into and the package sits centred and lower instead.
+      const narrow = this.width < 640;
+      const margin = 4;
+      const col = Math.min(
+        cols - size - margin,
+        Math.max(margin, Math.round(cols * (narrow ? 0.5 : 0.7) - size / 2)),
+      );
+      const row = Math.min(
+        rows - size - margin,
+        Math.max(margin, Math.round(rows * (narrow ? 0.68 : 0.6) - size / 2)),
+      );
+      if (col < margin || row < margin) return [];
+
+      this.chip = { col, row, width: size, height: size };
+
+      const launches: Launch[] = [];
+      const ring = 2;
+      // A pad every second cell all the way round, each one launching a trace
+      // straight out. That fan is the picture.
+      for (let step = 0; step <= size; step += 2) {
+        const sides = [
+          { col: col + step, row: row - ring, heading: 6 },
+          { col: col + step, row: row + size + ring, heading: 2 },
+          { col: col - ring, row: row + step, heading: 4 },
+          { col: col + size + ring, row: row + step, heading: 0 },
+        ];
+        sides.forEach((pad) => {
+          this.pads.push({
+            x: pad.col * pitch,
+            y: pad.row * pitch,
+            radius: 1.7,
+            terminal: false,
+            flare: 0,
+          });
+          launches.push(pad);
+        });
+      }
+
+      return launches;
+    }
+
+    /**
+     * Discrete parts: the small two-pad rectangles that cover a real board and
+     * carry most of its visual variety. Each one launches a trace from either
+     * end along its own axis, so parts sit in the routing rather than on top
+     * of it.
+     */
+    private placeComponents(cols: number, rows: number): Launch[] {
+      const pitch = this.pitch;
+      const launches: Launch[] = [];
+      // Proportional to the board rather than a fixed count: the same two
+      // dozen parts that read as scattered detail on a desktop cover a phone.
+      const area = (cols * rows) / 1000;
+      const wanted = Math.max(4, Math.min(30, Math.round(area * 3 + this.random() * 6)));
+      let guard = 0;
+
+      while (this.components.length < wanted && guard++ < 500) {
+        const long = 3 + Math.floor(this.random() * 4);
+        const short = 1 + Math.floor(this.random() * 2);
+        const vertical = this.random() < 0.5;
+        const width = vertical ? short : long;
+        const height = vertical ? long : short;
+        const col = 3 + Math.floor(this.random() * Math.max(1, cols - width - 6));
+        const row = 3 + Math.floor(this.random() * Math.max(1, rows - height - 6));
+
+        const clash =
+          this.components.some(
+            (c) =>
+              col < c.col + c.width + 3 &&
+              col + width + 3 > c.col &&
+              row < c.row + c.height + 3 &&
+              row + height + 3 > c.row,
+          ) ||
+          [...this.footprints, ...(this.chip ? [this.chip] : [])].some(
+            (f) =>
+              col < f.col + f.width + 3 &&
+              col + width + 3 > f.col &&
+              row < f.row + f.height + 3 &&
+              row + height + 3 > f.row,
+          );
+        if (clash) continue;
+
+        this.components.push({ col, row, width, height });
+
+        // A pad at each end, and a trace leaving each pad along the part's
+        // own axis, the way a resistor sits in a run rather than beside it.
+        const ends = vertical
+          ? [
+              { col: col + Math.floor(width / 2), row: row - 1, heading: 6 },
+              { col: col + Math.floor(width / 2), row: row + height + 1, heading: 2 },
+            ]
+          : [
+              { col: col - 1, row: row + Math.floor(height / 2), heading: 4 },
+              { col: col + width + 1, row: row + Math.floor(height / 2), heading: 0 },
+            ];
+
+        ends.forEach((end) => {
+          this.pads.push({
+            x: end.col * pitch,
+            y: end.row * pitch,
+            radius: 1.5,
+            terminal: false,
+            flare: 0,
+          });
+          launches.push(end);
+        });
+      }
+
+      return launches;
+    }
+
+    /**
+     * A via wherever a run changes direction, on some corners but not all.
+     * Singly placed dots along the copper are most of what a board's surface
+     * texture actually is; clusters of them are not.
+     */
+    private placeVias(): void {
+      this.traces.forEach((trace) => {
+        for (let i = 1; i < trace.points.length - 1; i++) {
+          if (this.random() > 0.22) continue;
+          this.pads.push({
+            x: trace.points[i].x,
+            y: trace.points[i].y,
+            radius: 1.4,
+            terminal: false,
+            flare: 0,
+          });
+        }
+      });
+    }
+
+    /** Once the fan-out is laid, the parts themselves are no-go areas. */
+    private blockFootprints(taken: Uint8Array, cols: number, rows: number): void {
+      this.block(this.footprints, taken, cols, rows);
+    }
+
+    private blockComponents(taken: Uint8Array, cols: number, rows: number): void {
+      this.block(this.components, taken, cols, rows);
+    }
+
+    private block(parts: Footprint[], taken: Uint8Array, cols: number, rows: number): void {
+      parts.forEach((part) => {
+        for (let c = part.col - 1; c <= part.col + part.width + 1; c++) {
+          for (let r = part.row - 1; r <= part.row + part.height + 1; r++) {
+            if (c < 0 || r < 0 || c >= cols || r >= rows) continue;
+            taken[r * cols + c] = 1;
+          }
+        }
+      });
+    }
+
+    /**
+     * One centre line becomes `tracks` parallel traces, mitred together. The
+     * index of the centre trace comes back, because that is the one a junction
+     * attaches to.
+     */
+    private layBundle(centre: Point[], tracks: number, weight: Weight): number {
+      const pitch = this.pitch;
+      const { width, alpha } = WEIGHTS[weight];
+      // A little variation per run, so the board has depth rather than three
+      // flat tiers of exactly equal ink.
+      const depth = alpha * (0.82 + this.random() * 0.4);
+
+      let middle = this.traces.length;
+      for (let track = 0; track < tracks; track++) {
+        const offset = (track - (tracks - 1) / 2) * pitch;
+        const points = offset === 0 ? centre : offsetPolyline(centre, offset);
+        if (offset === 0) middle = this.traces.length;
+        this.traces.push(this.measureTrace(points, width, depth));
+      }
+      return middle;
+    }
+
+    private measureTrace(points: Point[], width: number, alpha: number): Trace {
+      const marks = [0];
+      let length = 0;
+      for (let i = 1; i < points.length; i++) {
+        length += Math.hypot(points[i].x - points[i - 1].x, points[i].y - points[i - 1].y);
+        marks.push(length);
+      }
+      return { points, marks, length, width, alpha, lit: 0 };
+    }
+
+    /**
+     * Every trace end gets a terminal, except where it already starts on a
+     * footprint pad: a trace leaving a component is connected to it, and
+     * stacking a second ring on the same spot only looks like a mistake.
+     */
+    private capTerminals(): void {
+      const occupied = new Set(this.pads.map((pad) => `${Math.round(pad.x)}:${Math.round(pad.y)}`));
+      this.traces.forEach((trace) => {
+        [trace.points[0], trace.points[trace.points.length - 1]].forEach((point) => {
+          const key = `${Math.round(point.x)}:${Math.round(point.y)}`;
+          if (occupied.has(key)) return;
+          occupied.add(key);
+          this.pads.push({ x: point.x, y: point.y, radius: 1.6, terminal: true, flare: 0 });
+        });
+      });
+    }
+
+    /** Walk a trace and hand back the point `distance` pixels along it. */
+    private pointAt(trace: Trace, distance: number): Point {
+      const clamped = Math.max(0, Math.min(distance, trace.length));
+      let segment = 1;
+      while (segment < trace.marks.length - 1 && trace.marks[segment] < clamped) segment++;
+      const from = trace.points[segment - 1];
+      const to = trace.points[segment];
+      const span = trace.marks[segment] - trace.marks[segment - 1];
+      const t = span === 0 ? 0 : (clamped - trace.marks[segment - 1]) / span;
+      return { x: from.x + (to.x - from.x) * t, y: from.y + (to.y - from.y) * t };
+    }
+
+    /** Stroke only the part of a trace between two distances along it. */
+    private strokeRange(trace: Trace, from: number, to: number): void {
+      const ctx = this.ctx;
+      const start = Math.max(0, Math.min(from, trace.length));
+      const end = Math.max(0, Math.min(to, trace.length));
+      if (end - start <= 0.5) return;
+
+      const head = this.pointAt(trace, start);
+      ctx.beginPath();
+      ctx.moveTo(head.x, head.y);
+      for (let i = 1; i < trace.points.length; i++) {
+        if (trace.marks[i] <= start) continue;
+        if (trace.marks[i] >= end) break;
+        ctx.lineTo(trace.points[i].x, trace.points[i].y);
+      }
+      const tail = this.pointAt(trace, end);
+      ctx.lineTo(tail.x, tail.y);
+      ctx.stroke();
+    }
+
+    /** The unlit board, drawn once: every trace, every pad. */
+    private drawBase(): void {
+      const base = document.createElement('canvas');
+      base.width = this.canvas.width;
+      base.height = this.canvas.height;
+      const ctx = base.getContext('2d')!;
+      ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
+
+      this.traces.forEach((trace) => {
+        ctx.strokeStyle = `rgba(${this.colours.edge} / ${(this.settings.traceAlpha * trace.alpha).toFixed(4)})`;
+        ctx.lineWidth = trace.width;
+        ctx.beginPath();
+        pathRounded(ctx, trace.points, CORNER);
+        ctx.stroke();
+      });
+
+      // The package: a lightly filled body with a die inside it, a ring of
+      // bond pads, and a chamfer where pin one goes. Drawn as a solid block it
+      // reads as a missing image; the detail is what makes it a component.
+      if (this.chip) {
+        const pitch = this.pitch;
+        const x = this.chip.col * pitch;
+        const y = this.chip.row * pitch;
+        const w = this.chip.width * pitch;
+        const h = this.chip.height * pitch;
+        const notch = Math.max(6, w * 0.1);
+        const alpha = this.settings.padAlpha;
+
+        ctx.beginPath();
+        ctx.moveTo(x + notch, y);
+        ctx.lineTo(x + w, y);
+        ctx.lineTo(x + w, y + h);
+        ctx.lineTo(x, y + h);
+        ctx.lineTo(x, y + notch);
+        ctx.closePath();
+        ctx.fillStyle = `rgba(${this.colours.edge} / ${(alpha * 0.5).toFixed(4)})`;
+        ctx.fill();
+        ctx.strokeStyle = `rgba(${this.colours.edge} / ${(alpha * 1.9).toFixed(4)})`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // The die, and the pads that bond out to the package.
+        const die = { x: x + w * 0.26, y: y + h * 0.26, w: w * 0.48, h: h * 0.48 };
+        ctx.strokeStyle = `rgba(${this.colours.edge} / ${(alpha * 1.4).toFixed(4)})`;
+        ctx.strokeRect(die.x, die.y, die.w, die.h);
+
+        ctx.fillStyle = `rgba(${this.colours.edge} / ${(alpha * 1.6).toFixed(4)})`;
+        const step = Math.max(pitch * 1.6, 7);
+        for (let px = x + step; px < x + w - step * 0.5; px += step) {
+          for (let py = y + step; py < y + h - step * 0.5; py += step) {
+            if (
+              px > die.x - step * 0.4 &&
+              px < die.x + die.w &&
+              py > die.y - step * 0.4 &&
+              py < die.y + die.h
+            ) {
+              continue;
+            }
+            ctx.beginPath();
+            ctx.arc(px, py, 1.1, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      }
+
+      // Discrete parts: a filled body, the way a component sits on top of the
+      // copper rather than being etched into it.
+      ctx.fillStyle = `rgba(${this.colours.edge} / ${this.settings.padAlpha * 1.15})`;
+      this.components.forEach((part) => {
+        const pitch = this.pitch;
+        ctx.fillRect(part.col * pitch, part.row * pitch, part.width * pitch, part.height * pitch);
+      });
+
+      // Pads are drilled: a ring, not a dot, with the substrate showing
+      // through the hole.
+      this.pads.forEach((pad) => {
+        ctx.fillStyle = `rgba(${this.colours.node} / ${this.settings.padAlpha})`;
+        ctx.beginPath();
+        ctx.arc(pad.x, pad.y, pad.radius, 0, Math.PI * 2);
+        ctx.fill();
+        if (pad.terminal) return;
+        ctx.fillStyle = `rgba(${this.colours.paper} / 0.95)`;
+        ctx.beginPath();
+        ctx.arc(pad.x, pad.y, pad.radius * 0.45, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      this.base = base;
+    }
+
+    /**
+     * Start a pulse at one end of a trace picked at random, so the traffic
+     * never develops a pattern a viewer could learn.
+     */
+    private spawn(): Pulse {
+      const fromChip = this.chipTraces.length > 0 && Math.random() < 0.65;
+      const trace = fromChip
+        ? this.chipTraces[Math.floor(Math.random() * this.chipTraces.length)]
+        : Math.floor(Math.random() * this.traces.length);
+      const length = this.traces[trace]?.length ?? 0;
+      const fromEnd = Math.random() < 0.5;
+      return {
+        trace,
+        at: fromEnd ? length : 0,
+        from: fromEnd ? length : 0,
+        toward: fromEnd ? 0 : length,
+        hops: 0,
+        wait: 0,
+      };
+    }
+
+    /**
+     * A pulse that reaches the end of its trace carries on down whatever that
+     * end is joined to, and only stops where the copper genuinely stops. This
+     * is what turns a page of separate runs into one network: the eye follows
+     * a single signal across half a dozen traces before it finally ends.
+     *
+     * Nothing ever reverses. A signal that turns round at a dead end reads as
+     * something lost; one that simply finishes reads as a job completed.
+     */
+    private continueOrFinish(pulse: Pulse): Pulse {
+      const trace = this.traces[pulse.trace];
+      const atEnd = pulse.toward > pulse.from;
+      const junction = atEnd ? this.junctions.get(pulse.trace) : undefined;
+
+      if (junction && pulse.hops < MAX_HOPS) {
+        const host = this.traces[junction.host];
+        if (host) {
+          // Leave the junction by whichever arm of the host is longer, so a
+          // hop is worth watching rather than a twitch into a nearby corner.
+          const toward = junction.hostDistance > host.length / 2 ? 0 : host.length;
+          return {
+            trace: junction.host,
+            at: junction.hostDistance,
+            from: junction.hostDistance,
+            toward,
+            hops: pulse.hops + 1,
+            wait: 0,
+          };
+        }
+      }
+
+      const point = this.pointAt(trace, pulse.toward);
+      const terminal = this.pads.find(
+        (pad) => pad.terminal && Math.abs(pad.x - point.x) < 1.5 && Math.abs(pad.y - point.y) < 1.5,
+      );
+      if (terminal) terminal.flare = 1;
+      return { ...pulse, at: pulse.toward, wait: GAP };
+    }
+
+    private advance(dt: number): void {
+      this.litTraces.forEach((index) => {
+        const trace = this.traces[index];
+        trace.lit = Math.max(0, trace.lit - dt / COOLING);
+        if (trace.lit === 0) this.litTraces.delete(index);
+      });
+      this.pads.forEach((pad) => {
+        if (pad.flare > 0) pad.flare = Math.max(0, pad.flare - dt / FLARE);
+      });
+
+      this.pulses = this.pulses.map((pulse) => {
+        if (pulse.wait > 0) {
+          const wait = pulse.wait - dt;
+          return wait > 0 ? { ...pulse, wait } : this.spawn();
+        }
+
+        const trace = this.traces[pulse.trace];
+        if (!trace) return this.spawn();
+
+        const step = dt * this.settings.speed;
+        const forward = pulse.toward >= pulse.from;
+        const at = forward ? pulse.at + step : pulse.at - step;
+
+        // The trace lights behind the head as it goes, rather than all at once
+        // when it arrives.
+        const covered = Math.abs(at - pulse.from);
+        const span = Math.abs(pulse.toward - pulse.from) || 1;
+        trace.lit = Math.max(trace.lit, Math.min(1, covered / span));
+        this.litTraces.add(pulse.trace);
+
+        const arrived = forward ? at >= pulse.toward : at <= pulse.toward;
+        return arrived ? this.continueOrFinish(pulse) : { ...pulse, at };
+      });
+    }
+
+    private paint(): void {
+      const ctx = this.ctx;
+      ctx.clearRect(0, 0, this.width, this.height);
+      if (this.base) ctx.drawImage(this.base, 0, 0, this.width, this.height);
+
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
+
+      // Traces that have been run, still cooling. This is the record of work.
+      this.litTraces.forEach((index) => {
+        const trace = this.traces[index];
+        ctx.strokeStyle = `rgba(${this.colours.pulse} / ${(trace.lit * 0.4).toFixed(3)})`;
+        ctx.lineWidth = trace.width + 0.2;
+        ctx.beginPath();
+        pathRounded(ctx, trace.points, CORNER);
+        ctx.stroke();
+      });
+
+      // Terminals a pulse has reached, still flaring.
+      this.pads.forEach((pad) => {
+        if (pad.flare <= 0) return;
+        ctx.fillStyle = `rgba(${this.colours.agent} / ${(pad.flare * 0.8).toFixed(3)})`;
+        ctx.beginPath();
+        ctx.arc(pad.x, pad.y, pad.radius + pad.flare * 2.4, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // The pulses: a bright head with a short tail along the trace behind it,
+      // which is what makes it read as a signal rather than as a dot.
+      this.pulses.forEach((pulse) => {
+        if (pulse.wait > 0) return;
+        const trace = this.traces[pulse.trace];
+        if (!trace) return;
+        const forward = pulse.toward >= pulse.from;
+        const tail = forward ? pulse.at - TAIL : pulse.at + TAIL;
+
+        ctx.strokeStyle = `rgba(${this.colours.pulse} / 0.75)`;
+        ctx.lineWidth = trace.width + 0.6;
+        this.strokeRange(trace, Math.min(pulse.at, tail), Math.max(pulse.at, tail));
+
+        const point = this.pointAt(trace, pulse.at);
+        // A halo, then the head. One flat dot reads as a bug on the screen;
+        // the halo is what makes it read as something travelling.
+        ctx.fillStyle = `rgba(${this.colours.pulse} / 0.12)`;
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = `rgba(${this.colours.pulse} / 0.92)`;
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, 2.4, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
+
+    private tick = (time: number): void => {
+      const dt = this.last === 0 ? 0 : Math.min((time - this.last) / 1000, 0.05);
+      this.last = time;
+      this.advance(dt);
+      this.paint();
+      this.frame = requestAnimationFrame(this.tick);
+    };
+
+    /** Run only when the field is both on screen and in a visible tab. */
+    private sync(): void {
+      const shouldRun = this.visible && this.onScreen && !this.reduced;
+      if (shouldRun && this.frame === 0) {
+        this.last = 0;
+        this.frame = requestAnimationFrame(this.tick);
+      } else if (!shouldRun && this.frame !== 0) {
+        cancelAnimationFrame(this.frame);
+        this.frame = 0;
+      }
+    }
+
+    private onVisibility = (): void => {
+      this.visible = !document.hidden;
+      this.sync();
+    };
+
+    private onResize = (): void => {
+      window.clearTimeout(this.resizeTimer);
+      this.resizeTimer = window.setTimeout(() => {
+        this.measure();
+        this.build();
+        this.paint();
+      }, 180);
+    };
+  }
+
+  const canvas = document.querySelector<HTMLCanvasElement>('[data-agent-field]');
+  const intensity = canvas?.dataset.intensity;
+  if (canvas && (intensity === 'quiet' || intensity === 'active')) {
+    new AgentField(canvas, SETTINGS[intensity]).start();
+  }
+</script>
