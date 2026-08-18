@@ -39,6 +39,11 @@ format:
   - Sichtung realer Arbeitsschritte und Systeme
   - Vor Ort in der Schweiz oder remote
 entryPoint: Ein erstes Gespräch, in dem wir Umfang und beteiligte Bereiche abstecken.
+faq:
+  - q: 'Was, wenn am Ende kein tragfähiger Use Case übrig bleibt?'
+    a: 'Dann ist das das Ergebnis, und es ist ein brauchbares. Eine begründete Absage erspart Ihnen ein Projekt, das erst nach zwei Quartalen auffliegt. Wir sagen es früh und mit Begründung.'
+  - q: 'Brauchen wir vorher eine Datenstrategie oder aufgeräumte Daten?'
+    a: 'Nein. Die Datenlage ist Teil der Bewertung, nicht ihre Voraussetzung. Ein Use Case, der an den Daten scheitert, fällt genau hier auf.'
 ---
 
 Wir kartieren Ihre Prozesse und identifizieren Opportunities entlang dreier Spuren, agentische KI, klassische KI und Analytics, und prüfen sie auf Machbarkeit, Risiko und erwartete Wirkung. Sie erhalten ein priorisiertes Backlog konkreter Use Cases und ein klares Bild davon, wo Sie zuerst ansetzen.

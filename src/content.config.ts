@@ -35,6 +35,11 @@ const services = defineCollection({
     languages: z.array(z.string()).optional(),
     locations: z.array(z.string()).optional(),
     booking: z.string().optional(),
+    // Feeds the generated workshop FAQ. `groupSize` falls back to a shared
+    // default, `prerequisites` is per workshop because the answer is the
+    // selling point on the non-technical tracks.
+    prerequisites: z.string().optional(),
+    groupSize: z.string().optional(),
     // Rendered as a footnote under the workshop detail. Used where the subject
     // matter needs a standing caveat, e.g. governance content is orientation
     // for decisions and not legal advice.
@@ -71,6 +76,17 @@ const services = defineCollection({
     outcomes: z.array(z.string()).optional(),
     involvement: z.array(z.string()).optional(),
     entryPoint: z.string().optional(),
+    // Visible Q&A, also emitted as FAQPage structured data. Workshops generate
+    // most of theirs from the fields above and use this for anything extra;
+    // engagement pages author the whole list here.
+    faq: z
+      .array(
+        z.object({
+          q: z.string(),
+          a: z.string(),
+        }),
+      )
+      .optional(),
   }),
 });
 

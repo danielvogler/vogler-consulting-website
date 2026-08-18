@@ -12,6 +12,7 @@ topics:
   - Steuern und einführen
 duration: 2–3 Stunden, je nach Bedarf.
 booking: Auf Anfrage, individuell durch den Kunden buchbar.
+prerequisites: Keines. Der Workshop kommt ohne technisches Vorwissen aus, und niemand schreibt Code.
 languages:
   - Deutsch
   - Englisch

@@ -11,6 +11,7 @@ topics:
   - Management, Governance und Einführung
 duration: 2–3 Stunden, je nach Bedarf.
 booking: Auf Anfrage, individuell durch den Kunden buchbar.
+prerequisites: Grundkenntnisse in Python oder einer vergleichbaren Sprache sind hilfreich, aber keine Voraussetzung.
 languages:
   - Deutsch
   - Englisch

@@ -47,6 +47,11 @@ format:
   - Regular checkpoints with cost and quality numbers
   - Enabling your teams as a fixed part of the engagement, not an appendix
 entryPoint: A joint working session in which we review candidates and quantify today's baseline.
+faq:
+  - q: 'How do you measure the saving?'
+    a: 'Against a baseline taken before we start, and afterwards against the same measure. Without that starting number, any saving is an assertion.'
+  - q: 'What happens when an autonomous flow gets something wrong?'
+    a: 'Boundaries, approval points and the way back are defined before go-live. A flow whose failure case is not described does not go live.'
 ---
 
 Selected workflows run on their own for hours rather than minutes: research that deepens itself, changes that implement, test, and evidence themselves. We design and build the systems for it, prove the saving against what the work costs today, and establish the practice inside your teams.

@@ -40,6 +40,11 @@ format:
   - Built in your target environment, cloud or on-premises
   - Handover to your team as part of the engagement
 entryPoint: A conversation about the question, the source systems, and the target environment.
+faq:
+  - q: 'Do you run it in production as well?'
+    a: 'If you want us to, including monitoring and further development. Handover to your team works just as well, and the documentation is written for that from the start.'
+  - q: 'Can you build on our existing pipelines?'
+    a: 'Usually yes, and it is normally cheaper than a rebuild. What holds up stays; what demonstrably does not meet the requirements gets replaced.'
 ---
 
 Tailored applications, data products, and pipelines for your specific use case, from data ingestion to production delivery.

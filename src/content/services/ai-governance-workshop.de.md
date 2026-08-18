@@ -12,6 +12,7 @@ topics:
   - Rollen, Kontrollen und Einführung
 duration: 2–3 Stunden, je nach Bedarf.
 booking: Auf Anfrage, individuell durch den Kunden buchbar.
+prerequisites: Keines. Weder juristisches noch technisches Vorwissen wird vorausgesetzt.
 languages:
   - Deutsch
   - Englisch

@@ -11,6 +11,7 @@ topics:
   - Prompt-Systeme im Projekt und im Team verankern
 duration: 2–3 Stunden, je nach Bedarf.
 booking: Auf Anfrage, individuell durch den Kunden buchbar.
+prerequisites: Keines. Wer schon mit einem Sprachmodell gearbeitet hat, steigt schneller ein, notwendig ist es nicht.
 languages:
   - Deutsch
   - Englisch

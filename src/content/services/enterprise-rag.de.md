@@ -40,6 +40,11 @@ format:
   - Qualität wird gemessen, nicht behauptet
   - Betrieb in Ihrer Umgebung, Cloud oder On-Premises
 entryPoint: Ein Gespräch über Bestände, Formate und Berechtigungslage.
+faq:
+  - q: 'Bleiben bestehende Berechtigungen erhalten?'
+    a: 'Ja. Berechtigungen greifen beim Abruf, nicht erst in der Anzeige. Niemand erhält über die Suche Zugang zu Dokumenten, die ihm ohne sie verschlossen wären.'
+  - q: 'Welche Dokumentformate lassen sich anbinden?'
+    a: 'Die üblichen Office- und PDF-Bestände, gescannte Dokumente über Texterkennung, dazu Wikis und Ticketsysteme. Die Formatvielfalt wird zu Beginn erhoben, weil sie den Aufwand bestimmt.'
 ---
 
 Jedes PDF, jedes Dokument, jeder Scan und jedes Wissensartefakt Ihrer Organisation wird durchsuchbar und zitierbar. Wir bauen Retrieval-Augmented-Generation-Systeme für hohe Antwort-Treue: Chunking-Strategien für Ihre Inhalte, geerdete Zitate, Halluzinations-Guardrails und Zugriffskontrolle.

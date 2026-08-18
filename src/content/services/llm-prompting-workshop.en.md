@@ -11,6 +11,7 @@ topics:
   - Establishing prompt systems in projects and teams
 duration: 2–3 hours, depending on your needs.
 booking: On-demand, booked by the client for their team.
+prerequisites: None. Prior work with a language model helps you move faster but is not required.
 languages:
   - German
   - English

@@ -12,6 +12,7 @@ topics:
   - Roles, controls, and rollout
 duration: 2–3 hours, depending on your needs.
 booking: On-demand, booked by the client for their team.
+prerequisites: None. Neither legal nor technical background is assumed.
 languages:
   - German
   - English

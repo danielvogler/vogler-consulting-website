@@ -11,6 +11,7 @@ topics:
   - Sicherheit, Sandbox und Kostenkontrolle
 duration: 2–3 Stunden, je nach Bedarf.
 booking: Auf Anfrage, individuell durch den Kunden buchbar.
+prerequisites: Programmiererfahrung in einer beliebigen Sprache. Erfahrung mit Coding-Agenten ist nicht nötig.
 languages:
   - Deutsch
   - Englisch

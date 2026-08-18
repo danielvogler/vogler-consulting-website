@@ -3,6 +3,8 @@ import type { CollectionEntry } from 'astro:content';
 import { render } from 'astro:content';
 import PageHeader from '~/components/PageHeader.astro';
 import Section from '~/components/Section.astro';
+import Faq from '~/components/Faq.astro';
+import { buildWorkshopFaq, faqHeading } from '~/data/faq';
 import type { Locale } from '~/i18n';
 
 interface Labels {
@@ -24,7 +26,7 @@ interface Props {
   labels: Labels;
 }
 
-const { entry, lang: _lang, labels } = Astro.props;
+const { entry, lang, labels } = Astro.props;
 const { Content } = await render(entry);
 const {
   title,
@@ -39,6 +41,8 @@ const {
   disclaimer,
   agenda,
 } = entry.data;
+
+const faqItems = buildWorkshopFaq(entry, lang);
 ---
 
 <PageHeader number={labels.eyebrow} heading={title} lead={bluf} />
@@ -167,6 +171,8 @@ const {
       </div>
     )
   }
+
+  <Faq items={faqItems} heading={faqHeading(lang)} />
 
   {
     disclaimer && (

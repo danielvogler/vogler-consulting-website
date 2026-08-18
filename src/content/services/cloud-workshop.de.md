@@ -11,6 +11,7 @@ topics:
   - Auslieferung via Dashboards, Apps und APIs
 duration: 2–3 Stunden, je nach Bedarf.
 booking: Auf Anfrage, individuell durch den Kunden buchbar.
+prerequisites: Grundkenntnisse in Programmierung. Cloud-Erfahrung ist nicht nötig, wir beginnen bei den Grundlagen.
 languages:
   - Deutsch
   - Englisch

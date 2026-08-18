@@ -12,6 +12,7 @@ topics:
   - Governing and rolling out
 duration: 2–3 hours, depending on your needs.
 booking: On-demand, booked by the client for their team.
+prerequisites: None. The workshop requires no technical background, and nobody writes code.
 languages:
   - German
   - English

@@ -39,6 +39,11 @@ format:
   - Built in the target environment rather than a sandbox beside it
   - Handover to your team as part of the engagement
 entryPoint: A scoping workshop that establishes task boundaries and effort.
+faq:
+  - q: 'Do you build on existing frameworks or from scratch?'
+    a: 'Where established building blocks fit, we use them, and we build custom where the task demands it. We give reasons for that call rather than treating it as a matter of faith.'
+  - q: 'What happens after handover if something breaks?'
+    a: 'Handover includes documentation and tests so your team can act on it. Beyond that, ongoing support or operations by us is available, but never a condition.'
 ---
 
 We design and build AI agents and systems tailored to your domain, with quality metrics baked in, observability throughout, and delivery pipelines that route results directly into your existing systems.
