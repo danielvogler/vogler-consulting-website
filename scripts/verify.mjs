@@ -27,7 +27,7 @@ const RESET = '\x1b[0m';
 // Directories holding local-only material that must never be committed.
 // `.env.example` is deliberately tracked and is the one exception.
 const CONFIDENTIAL_PATHS =
-  /^(tmp|brand|workshops)\/|(^|\/)\.env(?!\.example)($|\.)|(^|\/)\.leakwords$/;
+  /^(tmp|notes|brand|workshops)\/|(^|\/)\.env(?!\.example)($|\.)|(^|\/)\.leakwords$/;
 
 // Generic credential shapes. Client-specific terms live in .leakwords, which is
 // gitignored because the terms themselves are the confidential part.

@@ -37,5 +37,8 @@ brand/
 # scratch space, local-only: source material, drafts and working notes
 /tmp/
 
+# working notes, plans and source material, local-only, root-level only
+/notes/
+
 # local-only leak-scan wordlist (the terms themselves are confidential)
 .leakwords

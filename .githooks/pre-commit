@@ -17,7 +17,7 @@ staged=$(git diff --cached --name-only --diff-filter=ACM)
 [ -z "$staged" ] && exit 0
 
 # Local-only material. .env.example is the deliberate exception.
-offenders=$(printf '%s\n' "$staged" | grep -E '^(tmp|brand|workshops)/|(^|/)\.env(\.example)?$|(^|/)\.env\.|(^|/)\.leakwords$' | grep -v '^\.env\.example$' || true)
+offenders=$(printf '%s\n' "$staged" | grep -E '^(tmp|notes|brand|workshops)/|(^|/)\.env(\.example)?$|(^|/)\.env\.|(^|/)\.leakwords$' | grep -v '^\.env\.example$' || true)
 [ -n "$offenders" ] && fail "local-only paths are staged:
 $offenders"
 
