@@ -3,6 +3,8 @@ import type { CollectionEntry } from 'astro:content';
 import { render } from 'astro:content';
 import PageHeader from '~/components/PageHeader.astro';
 import Section from '~/components/Section.astro';
+import Faq from '~/components/Faq.astro';
+import { buildServiceFaq, faqHeading } from '~/data/faq';
 import type { Locale } from '~/i18n';
 
 interface Labels {
@@ -25,7 +27,7 @@ interface Props {
   labels: Labels;
 }
 
-const { entry, lang: _lang, labels } = Astro.props;
+const { entry, lang, labels } = Astro.props;
 const { Content } = await render(entry);
 const {
   title,
@@ -39,6 +41,8 @@ const {
   format,
   entryPoint,
 } = entry.data;
+
+const faqItems = buildServiceFaq(entry, lang);
 
 // `situation` is authored as prose and may run to several paragraphs.
 const situationParagraphs = situation?.split(/\n{2,}/).filter(Boolean) ?? [];
@@ -188,4 +192,6 @@ const hasFrame = Boolean(duration || entryPoint || involvement?.length || format
       </div>
     )
   }
+
+  <Faq items={faqItems} heading={faqHeading(lang)} />
 </Section>

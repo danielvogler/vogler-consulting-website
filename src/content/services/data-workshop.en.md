@@ -2,7 +2,7 @@
 title: Data Workshop
 track: data
 bluf: Data as a first-class product, from raw input to modelling and management.
-order: 11
+order: 13
 lang: en
 topics:
   - Data as a product
@@ -11,6 +11,7 @@ topics:
   - Management, governance, and rollout
 duration: 2–3 hours, depending on your needs.
 booking: On-demand, booked by the client for their team.
+prerequisites: Basic Python or a comparable language helps, but is not a prerequisite.
 languages:
   - German
   - English

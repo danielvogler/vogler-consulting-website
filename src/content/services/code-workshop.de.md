@@ -2,7 +2,7 @@
 title: Code Workshop
 track: code
 bluf: Moderne Engineering-Praktiken für produktionsreifes Python.
-order: 12
+order: 14
 lang: de
 topics:
   - Git, CI/CD und Versionierung
@@ -11,6 +11,7 @@ topics:
   - Software-Architektur
 duration: 2–3 Stunden, je nach Bedarf.
 booking: Auf Anfrage, individuell durch den Kunden buchbar.
+prerequisites: Programmiererfahrung in einer beliebigen Sprache. Wir arbeiten mit dem, was Sie täglich verwenden.
 languages:
   - Deutsch
   - Englisch

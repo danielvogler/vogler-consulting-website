@@ -2,7 +2,7 @@
 title: Agentic AI Workshop
 track: agentic-ai
 bluf: Zuverlässige KI-Agenten entwerfen, betreiben und steuern.
-order: 10
+order: 12
 lang: de
 topics:
   - Konzepte und Frameworks
@@ -11,6 +11,7 @@ topics:
   - In der Praxis
 duration: 2–3 Stunden, je nach Bedarf.
 booking: Auf Anfrage, individuell durch den Kunden buchbar.
+prerequisites: Technisches Grundverständnis. Wer Software baut oder verantwortet, ist richtig; Erfahrung mit Agenten-Frameworks ist nicht nötig.
 languages:
   - Deutsch
   - Englisch

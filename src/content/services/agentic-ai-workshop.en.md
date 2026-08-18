@@ -2,7 +2,7 @@
 title: Agentic AI Workshop
 track: agentic-ai
 bluf: Designing, deploying, and governing reliable AI agents.
-order: 10
+order: 12
 lang: en
 topics:
   - Concepts and frameworks
@@ -11,6 +11,7 @@ topics:
   - In practice
 duration: 2–3 hours, depending on your needs.
 booking: On-demand, booked by the client for their team.
+prerequisites: A technical grounding. Anyone who builds or owns software will follow it; experience with agent frameworks is not required.
 languages:
   - German
   - English

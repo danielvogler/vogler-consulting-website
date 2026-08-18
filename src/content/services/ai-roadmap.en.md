@@ -60,6 +60,11 @@ format:
   - Deliverables in your formats, usable in steering and budget processes
   - On site in Switzerland or remote
 entryPoint: A short scoping session that establishes scope, participants, and effort.
+faq:
+  - q: 'How is this different from a strategy deck?'
+    a: 'What you end up with is a sequenced roadmap with a target architecture, operating model and governance that a team can pick up the following Monday. A presentation is a by-product, not the deliverable.'
+  - q: 'How long does a roadmap stay valid?'
+    a: 'It is cut for roughly twelve months, with a checkpoint each quarter. It is built to be updated rather than rewritten.'
 ---
 
 AI initiatives rarely fail on technology. They fail because nobody decided which business goals they serve, who operates them, and how success is measured. We build a roadmap with you that starts from the business goal and carries through to architecture, operations, and governance, for cloud, sovereign cloud, or on-premises.

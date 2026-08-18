@@ -40,6 +40,11 @@ format:
   - Quality is measured, not asserted
   - Operation in your environment, cloud or on-premises
 entryPoint: A conversation about holdings, formats, and the permission landscape.
+faq:
+  - q: 'Do existing permissions still apply?'
+    a: 'Yes. Permissions are enforced at retrieval, not merely at display. Nobody gains access through search to documents that would otherwise be closed to them.'
+  - q: 'Which document formats can you connect?'
+    a: 'The usual office and PDF holdings, scanned documents via text recognition, plus wikis and ticket systems. Format variety is surveyed up front because it drives the effort.'
 ---
 
 Every PDF, document, scan, and knowledge artefact in your organisation becomes searchable and citable. We build retrieval-augmented generation systems engineered for high-fidelity answers: chunking strategies tuned to your content, grounded citations, hallucination guardrails, and access control.

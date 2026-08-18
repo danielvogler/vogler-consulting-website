@@ -39,6 +39,11 @@ format:
   - A short introduction rather than a thick manual
   - On site in Switzerland or remote
 entryPoint: A conversation about tasks, data, and the security level you need.
+faq:
+  - q: 'Do the assistants work without the cloud?'
+    a: 'Yes. On your own device, or with locally hosted models where confidentiality requires it. Mixed operation works too: sensitive work local, the rest in a controlled cloud.'
+  - q: 'What about company data and permissions?'
+    a: 'As soon as company systems are connected, IT is involved. The assistant works with your existing permissions and sees nothing you are not already entitled to see.'
 ---
 
 Secure personal assistants, reachable wherever you are. OpenClaw, Hermes Agent, and the new generation of autonomous assistants take on long-running tasks for you. We install, tune, and operate them on your own device or a controlled cloud instance, configured for exactly the balance of freedom and security you want.

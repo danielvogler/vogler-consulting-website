@@ -47,6 +47,11 @@ format:
   - Regelmässige Prüfpunkte mit Kosten- und Qualitätszahlen
   - Befähigung Ihrer Teams als fester Bestandteil, nicht als Anhang
 entryPoint: Ein gemeinsamer Arbeitstermin, an dem wir Kandidaten sichten und die heutige Baseline beziffern.
+faq:
+  - q: 'Woran messen Sie die Einsparung?'
+    a: 'An einer Baseline, die vor dem Start erhoben wird, und danach am selben Mass. Ohne diese Ausgangszahl ist jede Einsparung eine Behauptung.'
+  - q: 'Was passiert, wenn ein autonomer Ablauf einen Fehler macht?'
+    a: 'Grenzen, Freigabepunkte und der Weg zurück werden vor dem Produktivgang festgelegt. Ein Ablauf, dessen Fehlerfall nicht beschrieben ist, geht nicht live.'
 ---
 
 Ausgewählte Abläufe laufen eigenständig über Stunden statt Minuten: Recherchen, die sich selbst vertiefen, Änderungen, die sich selbst umsetzen, testen und belegen. Wir entwerfen und bauen die Systeme dafür, weisen die Einsparung gegenüber dem heutigen Aufwand nach und verankern die Arbeitsweise in Ihren Teams.

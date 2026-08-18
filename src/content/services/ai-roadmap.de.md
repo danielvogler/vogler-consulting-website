@@ -60,6 +60,11 @@ format:
   - Ergebnisse in Ihren Formaten, verwendbar für Gremien und Budgetprozesse
   - Vor Ort in der Schweiz oder remote
 entryPoint: Ein kurzer Sondierungstermin, aus dem Zuschnitt, Beteiligte und Aufwand hervorgehen.
+faq:
+  - q: 'Wie unterscheidet sich das von einer Strategiepräsentation?'
+    a: 'Am Ende steht eine sequenzierte Roadmap mit Zielarchitektur, Betriebsmodell und Governance, an der ein Team am Montag darauf weiterarbeiten kann. Eine Präsentation ist das Nebenprodukt, nicht das Ergebnis.'
+  - q: 'Wie lange bleibt eine Roadmap gültig?'
+    a: 'Der Zuschnitt ist auf rund zwölf Monate angelegt, mit einer Standortbestimmung pro Quartal. Sie ist so gebaut, dass sie fortgeschrieben und nicht neu geschrieben wird.'
 ---
 
 KI-Vorhaben scheitern selten an der Technologie. Sie scheitern daran, dass niemand entschieden hat, welche Geschäftsziele sie bedienen, wer sie betreibt und woran Erfolg gemessen wird. Wir erarbeiten mit Ihnen eine Roadmap, die vom Geschäftsziel ausgeht und bis zu Architektur, Betrieb und Governance durchdekliniert ist, für Cloud, souveräne Cloud oder On-Premises.

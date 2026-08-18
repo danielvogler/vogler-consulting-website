@@ -39,6 +39,11 @@ format:
   - Review of real working steps and systems
   - On site in Switzerland or remote
 entryPoint: A first conversation to establish scope and the units involved.
+faq:
+  - q: 'What if no viable use case is left at the end?'
+    a: 'Then that is the result, and it is a useful one. A reasoned no saves you a project that would have surfaced two quarters later. We say so early, and we say why.'
+  - q: 'Do we need a data strategy or clean data first?'
+    a: 'No. The state of your data is part of the assessment, not a precondition for it. A use case that founders on the data is exactly what this surfaces.'
 ---
 
 We map your processes and identify opportunities across three tracks, agentic AI, classical AI, and analytics, and pressure-test them against feasibility, risk, and expected impact. You leave with a prioritised backlog of concrete use cases and a clear picture of where to start.

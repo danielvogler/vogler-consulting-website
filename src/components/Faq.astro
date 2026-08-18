@@ -1,0 +1,46 @@
+---
+/*
+ * Visible Q&A and the FAQPage structured data that describes it, from one
+ * array. Google requires the markup to match copy the visitor can actually
+ * read, so the two must never be able to drift: they are rendered from the
+ * same `items` prop in the same component, and there is no way to emit one
+ * without the other.
+ */
+import type { FaqItem } from '~/data/faq';
+
+interface Props {
+  items: FaqItem[];
+  heading: string;
+}
+
+const { items, heading } = Astro.props;
+
+const payload = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: items.map((item) => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: { '@type': 'Answer', text: item.a },
+  })),
+};
+---
+
+{
+  items.length > 0 && (
+    <div class="grid grid-cols-12 gap-6 md:gap-10 mt-16 pt-16 border-t border-rule">
+      <header class="col-span-12 md:col-span-3">
+        <h2 class="text-sm tracking-wider uppercase text-accent">{heading}</h2>
+      </header>
+      <dl class="col-span-12 md:col-span-9 space-y-6 max-w-3xl">
+        {items.map((item) => (
+          <div class="border-b border-rule/60 pb-6 last:border-0 last:pb-0">
+            <dt class="text-lg tracking-tight text-ink">{item.q}</dt>
+            <dd class="mt-2 text-base text-muted leading-relaxed">{item.a}</dd>
+          </div>
+        ))}
+      </dl>
+      <script type="application/ld+json" set:html={JSON.stringify(payload)} is:inline />
+    </div>
+  )
+}

@@ -2,7 +2,7 @@
 title: Cloud Workshop
 track: cloud
 bluf: From cloud concepts to delivering insights to dashboards.
-order: 13
+order: 15
 lang: en
 topics:
   - Cloud concepts
@@ -11,6 +11,7 @@ topics:
   - Delivery via dashboards, apps, and APIs
 duration: 2–3 hours, depending on your needs.
 booking: On-demand, booked by the client for their team.
+prerequisites: Basic programming knowledge. Cloud experience is not required, we start from the ground up.
 languages:
   - German
   - English

@@ -40,6 +40,11 @@ format:
   - Aufbau in Ihrer Zielumgebung, Cloud oder On-Premises
   - Übergabe an Ihr Team als Teil des Auftrags
 entryPoint: Ein Gespräch über Fragestellung, Quellsysteme und Zielumgebung.
+faq:
+  - q: 'Übernehmen Sie auch den Betrieb?'
+    a: 'Auf Wunsch ja, inklusive Überwachung und Weiterentwicklung. Ebenso möglich ist die Übergabe an Ihr Team, dafür ist die Dokumentation von Anfang an ausgelegt.'
+  - q: 'Können Sie auf bestehenden Pipelines aufsetzen?'
+    a: 'In der Regel ja, und meist ist das günstiger als ein Neubau. Was tragfähig ist, bleibt; ersetzt wird, was den Anforderungen nachweislich nicht genügt.'
 ---
 
 Massgeschneiderte Anwendungen, Datenprodukte und Pipelines für Ihren konkreten Anwendungsfall, von der Datenanbindung bis zur produktiven Auslieferung.

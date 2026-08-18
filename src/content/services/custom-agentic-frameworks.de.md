@@ -41,6 +41,11 @@ format:
   - Aufbau in der Zielumgebung statt in einer Sandbox nebenan
   - Übergabe an Ihr Team als Teil des Auftrags
 entryPoint: Ein Zuschnitt-Workshop, aus dem Aufgabenschnitt und Aufwand hervorgehen.
+faq:
+  - q: 'Bauen Sie auf bestehenden Frameworks auf oder von Grund auf?'
+    a: 'Wo etabliert Bausteine passen, verwenden wir sie. Eigenbau dort, wo der Aufgabenschnitt es verlangt. Die Entscheidung begründen wir, statt sie zur Glaubensfrage zu machen.'
+  - q: 'Was passiert nach der Übergabe, wenn etwas nicht funktioniert?'
+    a: 'Die Übergabe umfasst Dokumentation und Tests, damit Ihr Team eingreifen kann. Darüber hinaus ist eine begleitende Unterstützung oder der Betrieb durch uns möglich, aber nicht Bedingung.'
 ---
 
 Wir entwerfen und bauen KI-Agenten und Systeme zugeschnitten auf Ihre Domäne, mit eingebauten Qualitätsmetriken, Observability und Auslieferungs-Pipelines, die Ergebnisse direkt in Ihre bestehenden Systeme leiten.

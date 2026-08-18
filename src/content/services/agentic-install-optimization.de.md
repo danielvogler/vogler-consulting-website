@@ -39,6 +39,11 @@ format:
   - Kurze Einführung statt dickem Handbuch
   - Vor Ort in der Schweiz oder remote
 entryPoint: Ein Gespräch über Aufgaben, Datenlage und gewünschtes Sicherheitsniveau.
+faq:
+  - q: 'Laufen die Assistenten auch ohne Cloud?'
+    a: 'Ja. Auf dem eigenen Gerät oder mit lokal betriebenen Modellen, wo die Vertraulichkeit es verlangt. Ein gemischter Betrieb ist möglich, sensible Aufgaben lokal, der Rest in kontrollierter Cloud.'
+  - q: 'Was ist mit Unternehmensdaten und Berechtigungen?'
+    a: 'Sobald Unternehmenssysteme angebunden werden, ist die IT beteiligt. Der Assistent arbeitet mit Ihren bestehenden Berechtigungen und sieht nichts, was Sie nicht ohnehin sehen dürfen.'
 ---
 
 Sichere persönliche Assistenten, die unterwegs erreichbar sind. OpenClaw, Hermes Agent und die neue Generation autonomer Assistenten übernehmen langlaufende Aufgaben für Sie. Wir installieren, optimieren und betreiben sie auf Ihrem eigenen Gerät oder einer kontrollierten Cloud-Instanz, eingestellt auf genau das Mass an Freiheit und Sicherheit, das Sie wollen.
